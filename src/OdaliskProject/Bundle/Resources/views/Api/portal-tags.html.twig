@@ -1,0 +1,13 @@
+{% if countries|length > 0 %}
+    <li class="nav-header">Countries</li>
+    {% for country in countries %}
+        <li><span data-value="{{ country }}" data-type="country" class="label">{{ country }} <span>+</span></span></li>
+    {% endfor %}
+{% endif%}
+
+{% if statuses|length > 0 %}
+    <li class="nav-header">Statuses</li>
+    {% for status in statuses %}
+        <li><span data-value="{{ status }}" data-type="status" class="label">{{ status }} <span>+</span></span></li>
+    {% endfor %}
+{% endif%}

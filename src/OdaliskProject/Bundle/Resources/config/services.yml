@@ -1,0 +1,157 @@
+#parameters:
+#    odalisk.example.class: OdaliskProject\Bundle\Example
+
+#services:
+#    odalisk.example:
+#        class: %odalisk.example.class%
+#        arguments: [@service_id, "plain_value", %parameter%]
+
+
+# put your application
+# DIC parameters here
+parameters:
+    config.buzz.options:
+        - "User-agent: Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.9.0.1) Gecko/2008071615 Fedora/3.0.1-1.fc9 Firefox/3.0.1"
+    config.buzz.timeout: 30
+
+    config.file_dumper.data_path: "%project_root%/data/"
+
+imports:
+    # Import portals configuration
+    - { resource: "portals.yml" }
+    # Import categories
+    - { resource: "categories.yml"}
+    # Import formats
+    - { resource: "formats.yml"}
+    # Import licenses
+    - { resource: "licenses.yml"}
+    # Import metrics
+    - { resource: "metrics.yml"}
+
+# put your application
+# service definitions here
+services:
+    # The request dispatcher service, used to fire concurrent requests
+    request_dispatcher:
+        class: OdaliskProject\Bundle\Scraper\Tools\RequestDispatcher
+        arguments:
+            - %config.buzz.options%
+            - %config.buzz.timeout%
+
+    # A helper class to handle categories
+    category_normalizer:
+        class: OdaliskProject\Bundle\Scraper\Tools\Normalize\CategoryNormalizer
+        arguments:
+            - @doctrine
+            - %project_root%/app/logs/categories.log
+        calls:
+            - [ init, [ %categories% ] ]
+
+    # A helper class to handle categories
+    license_normalizer:
+        class: OdaliskProject\Bundle\Scraper\Tools\Normalize\LicenseNormalizer
+        arguments:
+            - @doctrine
+            - %project_root%/app/logs/licenses.log
+        calls:
+            - [ init, [ %licenses% ] ]
+
+    # A helper class to handle formats
+    format_normalizer:
+        class: OdaliskProject\Bundle\Scraper\Tools\Normalize\FormatNormalizer
+        arguments:
+            - @doctrine
+            - %project_root%/app/logs/formats.log
+        calls:
+            - [ init, [ %formats% ] ]
+    # A helper class to handle dates
+    date_normalizer:
+        class: OdaliskProject\Bundle\Scraper\Tools\Normalize\DateNormalizer
+        arguments:
+            - %project_root%/app/logs/dates.log
+
+    # The various portals we want to analyse :
+    # Base object for all our portals
+    base_platform:
+        class: OdaliskProject\Bundle\Scraper\BasePortal
+        abstract:  true
+        calls:
+            - [ setBuzz, [ @buzz, %config.buzz.timeout%, %config.buzz.options% ] ]
+            - [ setDoctrine, [ @doctrine ] ]
+            - [ setCategoryNormalizer, [@category_normalizer ] ]
+            - [ setFormatNormalizer, [@format_normalizer ] ]
+            - [ setDateNormalizer, [@date_normalizer ] ]
+            - [ setLicenseNormalizer, [@license_normalizer ] ]
+
+    # Base object for all portals using inCiteSolution
+    base_inCiteSolution:
+        class: OdaliskProject\Bundle\Scraper\InCiteSolution\BaseInCiteSolutionPortal
+        abstract:  true
+        parent:  base_platform
+    nantes:
+        class: OdaliskProject\Bundle\Scraper\InCiteSolution\Nantes\NantesPortal
+        parent: base_inCiteSolution
+        calls:
+            - [ setConfiguration, [ "%portals.nantes%" ] ]
+    loire_atlantique:
+        class: OdaliskProject\Bundle\Scraper\InCiteSolution\LoireAtlantique\LoireAtlantiquePortal
+        parent: base_inCiteSolution
+        calls:
+            - [ setConfiguration, [ "%portals.loire_atlantique%" ] ]
+
+    base_socrata:
+        class: OdaliskProject\Bundle\Scraper\Socrata\BaseSocrataPortal
+        abstract:  true
+        parent:  base_platform
+    socrata:
+        class: OdaliskProject\Bundle\Scraper\Socrata\Socrata\SocrataPortal
+        parent: base_socrata
+        calls:
+            - [ setConfiguration, [ "%portals.socrata%" ] ]
+    new_york:
+        class: OdaliskProject\Bundle\Scraper\Socrata\NY\NewYorkPortal
+        parent: base_socrata
+        calls:
+            - [ setConfiguration, [ "%portals.new_york%" ] ]
+    usa_gov:
+        class: OdaliskProject\Bundle\Scraper\Socrata\USA\USAGovPortal
+        parent: base_socrata
+        calls:
+            - [ setConfiguration, [ "%portals.usa_gov%" ] ]
+
+    base_ckan:
+        class: OdaliskProject\Bundle\Scraper\CKAN\BaseCkanPortal
+        abstract:  true
+        parent:  base_platform
+    uk_gov:
+        class: OdaliskProject\Bundle\Scraper\CKAN\UK\UKGovPortal
+        parent: base_ckan
+        calls:
+            - [ setConfiguration, [ "%portals.uk_gov%" ] ]
+    eu_gov:
+        class: OdaliskProject\Bundle\Scraper\CKAN\DataEU\EUPortal
+        parent: base_ckan
+        calls:
+            - [ setConfiguration, [ "%portals.eu_gov%" ] ]
+
+    data_publica:
+        class: OdaliskProject\Bundle\Scraper\DataPublica\DataPublicaPortal
+        parent:  base_platform
+        calls:
+            - [ setConfiguration, [ "%portals.data_publica%" ] ]
+
+    data_market:
+        class: OdaliskProject\Bundle\Scraper\DataMarket\DataMarketPortal
+        parent: base_platform
+        calls:
+            - [ setConfiguration, [ "%portals.data_market%" ] ]
+
+    base_lrnrln:
+        class: OdaliskProject\Bundle\Scraper\LrnRln\BaseLrnRln
+        abstract: true
+        parent: base_platform
+    montpellier:
+        class: OdaliskProject\Bundle\Scraper\LrnRln\Montpellier\MontpellierPortal
+        parent: base_lrnrln
+        calls:
+            - [ setConfiguration, [ "%portals.montpellier%" ] ]

@@ -1,0 +1,198 @@
+<?php
+
+namespace OdaliskProject\Bundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * OdaliskProject\Bundle\Entity\Metric
+ *
+ * @ORM\Table(name="metric")
+ * @ORM\Entity(repositoryClass="OdaliskProject\Bundle\Repository\MetricRepository")
+ */
+class Metric
+{
+	/**
+     * @var integer $id
+     *
+     * @ORM\Column(name="id", type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="AUTO")
+     */
+	private $id;
+
+    /**
+     * @var string $name
+     *
+     * @ORM\Column(name="name", type="string", length=255)
+     */
+	private $name;
+
+
+    /**
+     * @var string $description
+     *
+     * @ORM\Column(name="description", type="string", length=255, nullable=true)
+     */
+    private $description;
+
+    /**
+     * @var string $coefficient
+     *
+     * @ORM\Column(name="coefficient", type="float")
+     */
+    private $coefficient;
+
+    /**
+     * @var string $score
+     *
+     * @ORM\Column(name="score", type="float")
+     */
+	private $score;
+
+    /**
+     * @ORM\OneToMany(targetEntity="Metric", mappedBy="parent")
+     */
+	private $subsections;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="Metric", inversedBy="subsections")
+     * @ORM\JoinColumn(name="parent_id", referencedColumnName="id", onDelete="CASCADE")
+     */
+	private $parent;
+
+    public function __construct()
+    {
+        $this->subsections = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+    
+    /**
+     * Get id
+     *
+     * @return integer 
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * Set name
+     *
+     * @param string $name
+     */
+    public function setName($name)
+    {
+        $this->name = $name;
+    }
+
+    /**
+     * Get name
+     *
+     * @return string 
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    /**
+     * Set score
+     *
+     * @param integer $score
+     */
+    public function setScore($score)
+    {
+        $this->score = $score;
+    }
+
+    /**
+     * Get score
+     *
+     * @return integer 
+     */
+    public function getScore()
+    {
+        return $this->score;
+    }
+
+    /**
+     * Add subsections
+     *
+     * @param OdaliskProject\Bundle\Entity\Metric $subsections
+     */
+    public function addMetric(\OdaliskProject\Bundle\Entity\Metric $subsections)
+    {
+        $this->subsections[] = $subsections;
+    }
+
+    /**
+     * Get subsections
+     *
+     * @return Doctrine\Common\Collections\Collection 
+     */
+    public function getSubsections()
+    {
+        return $this->subsections;
+    }
+
+    /**
+     * Set parent
+     *
+     * @param OdaliskProject\Bundle\Entity\Metric $parent
+     */
+    public function setParent(\OdaliskProject\Bundle\Entity\Metric $parent)
+    {
+        $this->parent = $parent;
+    }
+
+    /**
+     * Get parent
+     *
+     * @return OdaliskProject\Bundle\Entity\Metric 
+     */
+    public function getParent()
+    {
+        return $this->parent;
+    }
+
+    /**
+     * Set description
+     *
+     * @param string $description
+     */
+    public function setDescription($description)
+    {
+        $this->description = $description;
+    }
+
+    /**
+     * Get description
+     *
+     * @return string 
+     */
+    public function getDescription()
+    {
+        return $this->description;
+    }
+
+    /**
+     * Set coefficient
+     *
+     * @param float $coefficient
+     */
+    public function setCoefficient($coefficient)
+    {
+        $this->coefficient = $coefficient;
+    }
+
+    /**
+     * Get coefficient
+     *
+     * @return float 
+     */
+    public function getCoefficient()
+    {
+        return $this->coefficient;
+    }
+}

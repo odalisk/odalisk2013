@@ -1,0 +1,4 @@
+odalisk:
+    resource: "@OdaliskBundle/Resources/config/routing.yml"
+    prefix:   /
+

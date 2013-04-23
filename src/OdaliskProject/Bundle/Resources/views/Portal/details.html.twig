@@ -1,0 +1,60 @@
+{% extends "OdaliskBundle::browser.html.twig" %}
+
+{% block title %}{{ portal.name }} - Odalisk project{% endblock %}
+
+{% block content %}
+<div class="row-fluid row-nomargin-top">
+    <div class="span12">
+        <ul class="breadcrumb">
+          <li>
+            <a href="{{ path('portals') }}">Portals</a> <span class="divider">/</span>
+          </li>
+          <li class="active">{{ portal.name }}</li>
+        </ul>
+        <div class="well hero-unit hero-unit-intro hero-unit-portal">
+            <h1>{{ portal.name }} <a target="_blank" href="{{portal.url}}"><i class="icon-play-circle"></i> go to portal page</a></h1>
+            <div class="clearfix"></div>
+            <div class="container-fluid">
+                <div class="row-fluid">
+                    <div class="span4">
+                        {% include "OdaliskBundle:Portal:info-table.html.twig" with {'portal' : portal, 'display_date' : true } %}
+                    </div>
+                    <div class="span8">
+                        {% include "OdaliskBundle:Portal:score-table.html.twig" with {'portal' : portal} %}
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="container-fluid container-fluid-no-padding">
+            <div class="row-fluid row-nomargin-top">
+                <div class="span12">
+                        <ul class="nav nav-tabs" id="portalTab">
+
+                          <li class="active"><a href="#criteria" data-toggle="tab">Score details</a></li>
+                          <li><a href="#datasets" data-toggle="tab">Datasets list</a></li>
+                        </ul>
+
+                        <div class="tab-content">
+                            <div class="tab-pane active" id="criteria">
+                                  {% include "OdaliskBundle:Portal:portal-metrics.html.twig" with {'portal': portal} %}
+                              </div>
+                          <div class="tab-pane" id="datasets">
+                              {% include "OdaliskBundle:Search:dataset-list.html.twig" with {'current_portal': portal.id} %}
+                          </div>
+
+                        </div><!--/row-->
+                </div><!--/span-->
+            </div><!--/row-->
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block jsvariables %}
+    window.searchType = "dataset";
+    window.displayType = "list";
+    window.needResult = true;
+    {{ parent() }}
+{% endblock %}
+

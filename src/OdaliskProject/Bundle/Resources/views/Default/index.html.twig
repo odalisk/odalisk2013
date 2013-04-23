@@ -1,0 +1,239 @@
+{% extends "OdaliskBundle::layout.html.twig" %}
+
+{% block title %}Odalisk project{% endblock %}
+
+{% block menu %}
+    <li class="active"><a href="#why">Why Odalisk</a></li>
+    <li><a href="#tools">Tools</a></li>
+    <li><a href="#about">About</a></li>
+    <li><a href="#contribute">Contribute</a></li>
+{% endblock %}
+
+{% block page_name %}
+<body data-spy="scroll" class="home">
+{% endblock %}
+
+{% block content %}
+<div id="headerWrapper">
+    <header class="hero-unit">
+        <div class="inner">
+            <div id="carouselHome" class="carousel slide">
+              <!-- Carousel items -->
+              <div class="carousel-inner">
+                <div class="active item" id="homeSlide">
+                    <h1>Open Data Live Score Checking</h1>
+                    <p>Automatically rating the openness of various data portals out there</p>
+                    <div>
+                        <a class="btn btn-info btn-large" href="{{ path('search') }}">Try our search engine</a>
+                        <a class="btn btn-large" href="{{ path('portals') }}">Browse portals</a>
+                    </div>
+                    <p style="font-size:20px;"><strong>Odalisk is still in beta but you can already start to browse our content and check out some scores</strong></p>
+                </div>
+                <div class="item" id="browserSlide">
+                    <div class="bottomImage"></div>
+                        <div class="inner-slide">
+                            <h1>Portal and Dataset Browser</h1>
+                            <p>Looking for a particular type of portal/dataset ? Check out our dedicated meta-catalog!</p>
+                        
+                            <div>
+                                <a class="btn btn-large" href="{{ path('search') }}">Lets go !</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+              <!-- Carousel nav -->
+              <a class="carousel-control left" href="#carouselHome" data-slide="prev">&lsaquo;</a>
+              <a class="carousel-control right" href="#carouselHome" data-slide="next">&rsaquo;</a>
+            </div>
+        </div>
+    </header>
+</div>
+<div class="container">
+    <section id="why">
+        <div class="page-header">
+            <h1>The project</h1>
+        </div>
+        <div class="page-body">
+            <p>Odalisk stands for Open Data Live Score ChecKing !<br/>
+			What does it mean? We crawl through lots of datasets (~65k at the moment), chew through the data we collect and calculate scores that represent the openness of each dataset. Then we agregate these results at the portal level, mix in some more data, and here we have our score! Our goal is to help promote the Opendata movement by providing an oversight on how the data is set free.</p>
+            <div class="row">
+                <div class="span4">
+                    <h3>Why <span class="blue-font">Odalisk</span> ?</h3>
+                    <p>The Opendata movement has been a reality for quite some time now, but recently we have witnessed a real rush : everyone wants to put their data out there. While the idea is great, the ways in which the data is liberated vary wildly. Some are very good at it, others not so much, and a lot inbetween. In order for the data to be usable, it needs to be liberated in ways that achieve a certain level of standardization. That's what we want to help achieve.</p>
+
+                </div>
+                <div class="span4">
+                    <h3>Objectives</h3>
+                    <p>
+					<ol>
+						<li>Come up with a list of robust, meaningful criterias to determine how open a dataset or portal is.</li>
+						<li>Find ways to check automatically for these criterias. This allows us to scale to a vast number of datasets</li>
+						<li>Analyse all of that data and display it in a sexy, easy to grasp way</li>
+					</ol>
+					</p>
+
+                </div>
+                <div class="span4">
+                    <h3>Our workflow</h3>
+                    <p>
+					<ol>
+					    <li>Find some portals that we are interested in checking for openness</li>
+						<li>Find the urls for all the datasets</li>
+						<li>Download all of these webpages</li>
+						<li>Parse the HTML code and extract useful data</li>
+						<li>Find the answer to our criterias from the data we extracted</li>
+						<li>Agregate it in meaningful ways and display it</li>
+					</ol>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="tools">
+        <div class="page-header">
+          <h1>Awesome tools</h1>
+        </div>
+        <div class="page-body">
+            <div class="row">
+                <div class="span4">
+                    <i class="icon icon-list-alt icon-large"></i><h2>Compare</h2>
+                    <p>
+                        Can't find out which is the best between two datasets before starting a project ? The odalisk comparator is there to help you.
+                    </p>
+                    <!--<a class="btn btn-small pull-right" href="{{ path('search')  }}">Learn more</a>-->
+                </div>
+                <div class="span4">
+                    <i class="icon icon-check icon-large"></i><h2>Test</h2>
+                    <p>
+                        You launched an Opendata portal and you are concerned
+                        by openness questions and opendata normalization?
+                        Download our Chrome extension and send us your
+                        results. We will tell you how well you are doing!
+                    </p>
+                </div>
+                <div class="span4">
+                    <i class="icon icon-large icon-road"></i><h2>Help</h2>
+                    <p>
+                        Openness and opendata normalization mean something to you ? You want to help make odalisk better ? Come, join us and help us take the project a step further!
+                    </p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="span4">
+                    <i class="icon icon-search icon-large"></i><h2>Search</h2>
+                    <p>
+                       Looking for a particular dataset category or theme ? Try out our multicriteria search engine to find the jewel !
+                    </p>
+                </div>
+                <div class="span4">
+                    <i class="icon icon-large icon-book"></i><h2>Learn</h2>
+                    <p>
+                        Want to learn more about Opendata ? Odalisk can help you get information about licences, platforms, data formats, and more.
+                    </p>
+                </div>
+                <div class="span4">
+                    <i class="icon icon-large icon-flag"></i><h2>Discover</h2>
+                    <p>
+                        Take a look at our Portal browser and discover new
+                        Portals, Datasets and maybe new ideas !
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="about">
+        <div class="page-header">
+          <h1>About</h1>
+        </div>
+        <div class="page-body">
+            <h2>The Project</h2>
+            <div class="row">
+                <div class="span12">
+                    <p>
+                    Initially inspired by an idea of a professor of Polytech’Nantes, the project was developed during the 4th year of studies by five students. The Open Data Week for first objective, Odalisk expanded to be able to crawl eight platform, about 2G of datasets, extract eleven informations, and calculate more than ten metrics.
+                    <p>
+                </div>
+            </div>
+            <h2>The Team</h2>
+            <div class="row">
+              <div class="span4">
+                  {% image '@OdaliskBundle/Resources/public/img/bury.jpg' output='/images/maxime-bury.jpg'
+                    %}
+                    <img class="team-img" src="{{ asset_url }}"/>
+                    {% endimage %}
+                    <h3>Maxime Bury</h3>
+                    <p>Our server-side infrastructure expert</p>
+              </div>
+              <div class="span4">
+                    {% image '@OdaliskBundle/Resources/public/img/grolleau.jpg' output='/images/florian-grolleau.jpg'
+                      %}
+                      <img class="team-img" src="{{ asset_url }}"/>
+                      {% endimage %}
+                      <h3>Florian Grolleau</h3>
+                      <p>Our web crawling &amp; statistics expert</p>
+              </div>
+              <div class="span4">
+                  {% image '@OdaliskBundle/Resources/public/img/launay.jpg' output='/images/damien-launay.jpg'
+                    %}
+                  <img class="team-img" src="{{ asset_url }}"/>
+                  {% endimage %}
+                  <h3>Damien Launay</h3>
+                  <p>Our web crawling and criteria expert</p>
+              </div>
+            </div>
+            <div class="row">
+              <div class="span4">
+                    {% image '@OdaliskBundle/Resources/public/img/grignon.jpg' output='/images/florian-grignon.jpg'
+                    %}
+                    <img class="team-img" src="{{ asset_url }}"/>
+                    {% endimage %}
+                    <h3>Florian Grignon</h3>
+                    <p>Project coordinator and license expert</p>
+                </div>
+              <div class="span4">
+                  {% image '@OdaliskBundle/Resources/public/img/sanchez.jpg' output='/images/julien-sanchez.jpg'
+                  %}
+                  <img class="team-img" src="{{ asset_url }}"/>
+                  {% endimage %}
+                  <h3>Julien Sanchez</h3>
+                  <p>Design and UX specialist</p>
+              </div>
+              <div class="span4">
+                    {% image '@OdaliskBundle/Resources/public/img/raschia.jpg' output='/images/guillaume-raschia.jpg'
+                    %}
+                    <img class="team-img" src="{{ asset_url }}"/>
+                    {% endimage %}
+                    <h3>Guillaume Raschia</h3>
+                    <p>Our beloved teacher!</p>
+                </div>
+            </div>
+            </div>
+    </section>
+
+      <section id="contribute">
+        <div class="page-header">
+          <h1>How to contribute</h1>
+        </div>
+        <div class="page-body">
+          <p>Odalisk is an Open Source project available on Github at <a href="http://github.com/odalisk/odalisk".>http://github.com/odalisk/odalisk</a>. Help us make it more awseome!</p>
+        </div>
+        <!-- <h3>Install the project :</h3>
+        <p>If you already have Git installed, you can get the latest development version via Git itself:</p>
+        <pre class="prettyprint linenums">git clone https://github.com/odalisk/odalisk/</pre>
+        <p>You can also always browse the current contents of the git repository using the web interface.</p> -->
+      </section>
+
+
+
+</div><!-- container -->
+
+{% endblock %}
+
+{% block jsvariables %}
+    window.page = "home";
+    
+    {{ parent() }}
+{% endblock %}
+

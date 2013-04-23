@@ -1,0 +1,25 @@
+{% extends "OdaliskBundle::browser.html.twig" %}
+
+{% block title %}Portal list - Odalisk project{% endblock %}
+
+{% block content %}
+    
+    <div class="well hero-unit hero-unit-presentation">
+        <h1>Portals : </h1>
+        <p>Find here all portals crawled by our system</p>
+    </div>
+    <div class="container-fluid">
+        <div class="row-fluid row-nomargin-top">
+            <div class="span12">
+                {% include "OdaliskBundle:Search:portal-list.html.twig" %}
+            </div>
+        </div><!--/row-->
+    </div>
+{% endblock %}
+
+{% block jsvariables %}
+    window.searchType = "portal";
+    window.displayType = "span";
+    window.needResult = true;
+    {{ parent() }}
+{% endblock %}

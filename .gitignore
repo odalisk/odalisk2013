@@ -1,0 +1,10 @@
+app/config.yml
+app/cache/*
+app/logs/*
+vendor/*
+web/bundles/*
+data/*
+composer.lock
+!.gitkeep
+!vendor/assets
+*.php~

@@ -1,0 +1,33 @@
+<div class="row-fluid row-nomargin-top">
+  <div class="span9">
+      <div class="table table-dataset-list table-striped">
+          <h1>Datasets list</h1>
+          <div id="request-result">
+
+          </div>
+      </div>
+  </div>
+  <div id="alwaysOnTop" class="span3">
+      <div id="search-row">
+          <input placeholder="Search" type="text" id="search" class="search-query"/>
+      </div>
+      <div class="well tag-list">
+          <h3>Citeria search :</h3>
+          <ul class="nav nav-list">
+              
+              {#
+                {% render "OdaliskBundle:Api:datasetTags" with {'current_portal': current_portal} %}
+              #} 
+
+              {{ render(controller("OdaliskBundle:Api:datasetTags",{ 'current_portal': current_portal })) 
+              }}
+            
+
+          </ul>
+      </div> <!-- /well -->
+  </div>
+</div>
+      
+    
+    
+

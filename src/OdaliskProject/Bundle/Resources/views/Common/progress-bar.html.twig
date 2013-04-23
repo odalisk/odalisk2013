@@ -1,0 +1,29 @@
+{% if score > 80 and color %}
+<div class="progress progress-striped
+ active progress-success">
+{% elseif score > 60 and color%}
+    <div class="progress progress-striped
+     active progress-info">
+{% elseif score > 40 and color%}
+    <div class="progress progress-striped
+      active progress-warning">
+{% elseif color %}
+    <div class="progress progress-striped
+      active progress-danger">
+{% else %}
+    <div class="progress progress-striped
+      active">
+{% endif %}
+    {% if with_number %}
+    <div class="outer-bar" style="width:100%">
+        Score : {{ score|number_format(2) }} %
+    </div>
+    {% endif %}
+  <div class="bar" style="width: {{ score }}%;">
+      {% if with_number %}
+      <div class="inner-bar" style="width:{{ 100/(score/100) }}%">
+         Score : {{ score|number_format(2) }} %
+        </div>
+        {% endif %}
+  </div>
+</div>

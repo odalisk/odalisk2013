@@ -1,0 +1,43 @@
+homepage:
+    pattern:    /
+    defaults:   { _controller: OdaliskBundle:Default:index }
+
+browser:
+    pattern:    /browser
+    defaults:   { _controller: OdaliskBundle:Browser:index, _format: html }
+
+portals:
+    pattern:    /browser/portals/{_format}
+    defaults:   { _controller: OdaliskBundle:Portal:index, page_number: 1, _format: html }
+
+portal_details:
+    pattern:    /browser/portals/details/{portal_number}/{page_number}
+    defaults:   { _controller: OdaliskBundle:Portal:details, page_number:1, _format:html }
+
+api_portal:
+    pattern:    /api/portals/{page_index}/{page_size}/{display}
+    defaults:   { _controller: OdaliskBundle:Api:portals, page_index:0, page_size:10, display:span }
+    requirements:
+        page_index: \d+
+        page_size:  \d+
+        display: list|span
+
+api_datasets:
+    pattern:    /api/datasets/{page_index}/{page_size}/{display}
+    defaults:   { _controller: OdaliskBundle:Api:datasets, page_index:0, page_size:10, display:list }
+
+api:
+    pattern:    /api/{_format}
+    defaults:   { _controller: OdaliskBundle:Api:api, _format:json }
+
+search:
+    pattern:    /search
+    defaults:   { _controller: OdaliskBundle:Search:search, _format:html }
+
+dataset_details:
+    pattern:    /browser/datasets/details/{dataset_number}/{page_number}/{_format}
+    defaults:   { _controller: OdaliskBundle:Dataset:details, _format: html, page_number: 1 }
+
+contact:
+    pattern:  /contact
+    defaults: { _controller: OdaliskBundle:Default:contact }

@@ -1,0 +1,11 @@
+{% if datasets|length > 0 %}
+    {% for dataset in datasets %}
+        {% include 'OdaliskBundle:Dataset:span-item.html.twig' with {'dataset': dataset} %}
+    {% endfor %}
+    {% if datasets|length == 20 %}
+    <!--<div class="btn btn-large" onclick="window.api.nextPage(this);" id="moreResults">See more results</div>-->
+    {% endif %}
+{% elseif pagenumber != 0 %}
+{% else %}
+    <h2>No result</h2>
+{% endif %}

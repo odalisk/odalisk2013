@@ -1,0 +1,27 @@
+{% if portals|length > 0 %}
+    {% if display == 'span' %}
+    <div class="row-fluid row-nomargin-top portal-elem">
+        {% for portal in portals %}
+                {% include 'OdaliskBundle:Portal:span-item.html.twig' with {'portal': portal} %}
+        {% endfor %}
+    </div>
+    {% elseif display == 'list' %}
+        {% for portal in portals %}
+            {% include 'OdaliskBundle:Portal:table-item.html.twig' with {'portal': portal} %}
+        {% endfor %}
+    {% endif %}
+    {% if portals|length == 20 %}
+        <tr>
+            <td colspan="2" class="portal-item">
+            <div class="btn btn-large" onclick="window.api.nextPage(this);" id="moreResults">Show more results</div>
+            </td>
+        </tr>
+    {% endif %}
+{% elseif pagenumber != 0 %}
+{% else %}
+    <tr class="no-result">
+        <td colspan="3" class="portal-item">
+            <h2>No results found</h2>
+        </td>
+    </tr>
+{% endif %}
