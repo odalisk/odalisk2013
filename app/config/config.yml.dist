@@ -64,6 +64,16 @@ swiftmailer:
     password:  %mailer_password%
     spool:     { type: memory }
 
+doctrine_mongodb:
+    connections:
+        default:
+            server: %mongodb_database%
+            options: {}
+    default_database: %mongodb_database_name%
+    document_managers:
+        default:
+            auto_mapping: true
+
 parameters:
         database_host:      <your database host>
         database_port:      <your database port>
