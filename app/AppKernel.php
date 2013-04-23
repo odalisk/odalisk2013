@@ -20,6 +20,8 @@ class AppKernel extends Kernel
             new JMS\DiExtraBundle\JMSDiExtraBundle($this),
             new JMS\SecurityExtraBundle\JMSSecurityExtraBundle(),
             new Sensio\Bundle\BuzzBundle\SensioBuzzBundle(),
+            new Doctrine\Bundle\MongoDBBundle\DoctrineMongoDBBundle(),
+
 
             // Odalisk Bundle 
             new OdaliskProject\Bundle\OdaliskBundle(),

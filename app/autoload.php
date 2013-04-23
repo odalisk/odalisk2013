@@ -1,6 +1,8 @@
 <?php
 
 use Doctrine\Common\Annotations\AnnotationRegistry;
+use Doctrine\ODM\MongoDB\Mapping\Driver\AnnotationDriver;
+
 
 $loader = require __DIR__.'/../vendor/autoload.php';
 
@@ -11,6 +13,7 @@ if (!function_exists('intl_get_error_code')) {
 
 AnnotationRegistry::registerLoader(array($loader, 'loadClass'));
 
+AnnotationDriver::registerAnnotationClasses();
 
 AnnotationRegistry::registerAutoloadNamespaces(array(
     'Gedmo\Mapping\Annotation'  => realpath(__DIR__.'/../') . '/vendor/gedmo/doctrine-extensions/lib',
