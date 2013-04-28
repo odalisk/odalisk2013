@@ -2,14 +2,15 @@ parameters:
     config.enabled_portals:
         #- nantes
         #- loire_atlantique
-        - socrata
-        - new_york
-        - usa_gov
-        - uk_gov
+        #- socrata
+        #- new_york
+        #- usa_gov
+        #- uk_gov
         #- eu_gov
-        - data_publica
+        #- data_publica
         #- data_market
         #- montpellier
+        - dcat_eu_gov
 
     # All the information we need for each platfom. Will be used to initialize the services
     portals.nantes:
@@ -210,3 +211,24 @@ parameters:
         api_documentation: false
         opendata_concept_explained: true
         type: "LrnRln"
+
+
+    portals.dcat_eu_gov:
+        name:       "DCAT Europe's Public Data"
+        base_url:   "http://publicdata.eu/dataset/"
+        api_url:    "http://publicdata.eu/api/rest/dataset"
+        country:    "European Union"
+        entity:     "European Linked Open Data Consortium"
+        status:     "Private non-profit making"
+        search_engine:   true
+        metadata_search: true
+        filtering_license_search: false
+        forum_section:   false
+        contact_form: true
+        rating_dataset: false
+        comment_dataset: false
+        suggest_dataset: false
+        api: true
+        api_documentation: true
+        opendata_concept_explained: false
+        type: "CKAN"

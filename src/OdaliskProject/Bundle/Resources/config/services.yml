@@ -150,8 +150,15 @@ services:
         class: OdaliskProject\Bundle\Scraper\LrnRln\BaseLrnRln
         abstract: true
         parent: base_platform
+
     montpellier:
         class: OdaliskProject\Bundle\Scraper\LrnRln\Montpellier\MontpellierPortal
         parent: base_lrnrln
         calls:
             - [ setConfiguration, [ "%portals.montpellier%" ] ]
+
+    dcat_eu_gov:
+        class: OdaliskProject\Bundle\Scraper\DcatPortal
+        parent: base_platform
+        calls:
+            - [ setConfiguration, [ "%portals.dcat_eu_gov%" ] ]

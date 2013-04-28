@@ -3,6 +3,7 @@
 namespace OdaliskProject\Bundle\Scraper\Tools;
 
 use Buzz\Message;
+use OdaliskProject\Bundle\Document\DcatDataset;
 
 class FileDumper
 {
@@ -15,6 +16,12 @@ class FileDumper
      * Entity manager
      */
     protected static $em;
+
+
+    /**
+     * MongoDb manager
+     */
+    protected static $mongoDb;
 
     protected static $count = 0;
     protected static $totalCount = 0;
@@ -48,12 +55,58 @@ class FileDumper
         }
     }
 
+
+    public static function saveRdfToDisk(Message\Request $request, Message\Response $response)
+    {
+        self::$count++;
+        $content = "";
+        $file = array();
+        $file['meta']['code'] = $response->getStatusCode();
+        $file['meta']['url'] = $request->getUrl();
+        $file['meta']['hash'] = md5($file['meta']['url']);
+
+        if (200 == $file['meta']['code']) {
+            $content = $response->getContent();
+        }
+
+        $platform = self::getPlatformName($file['meta']['url']);
+        $filename = self::$base_path . $platform . '/' . $file['meta']['hash'];
+        file_put_contents($filename, json_encode($content));
+
+
+
+
+        $dcatDataset = new DcatDataset();
+        $dcatDataset->setPortalName($platform);
+        $dcatDataset->setFile($filename);
+        $dm = self::$mongoDb;
+        $dm->persist($dcatDataset);
+        $dm->flush();
+
+        unlink($filename);
+
+        if (0 == self::$count % 100 || self::$count == self::$totalCount) {
+           error_log('[Get Rdf] ' . self::$count . ' / ' . self::$totalCount . ' done');
+           error_log('[Get Rdf] currently using ' . memory_get_usage(true) / (1024 * 1024) . 'MB of memory');
+        }
+    }
+
+
+
+
     public static function saveUrls($urls, $portal_name)
     {
         self::verifyPortalPath($portal_name);
         $file = self::$base_path.$portal_name.'/urls.json';
         file_put_contents($file, json_encode($urls));
     }
+
+    public static function saveRdfUrls($urls, $portal_name)
+    {
+        self::verifyPortalPath($portal_name);
+        $file = self::$base_path.$portal_name.'/rdf.json';
+        file_put_contents($file, json_encode($urls));
+    }    
 
     public static function getUrls($portal_name)
     {
@@ -62,6 +115,20 @@ class FileDumper
 
         if (false === $data) {
             error_log('[Get HTML] URL file is missing. Run ./console odalisk:geturls ' . $portal_name);
+
+            return array();
+        } else {
+           return json_decode($data, true);
+        }
+    }
+
+    public static function ddlRdfFiles($portal_name)
+    {
+        $file = self::$base_path.$portal_name.'/rdf.json';
+        $data = file_get_contents($file);
+
+        if (false === $data) {
+            error_log('[Get HTML] URL file is missing. Run ./console odalisk:dcat:geturls ' . $portal_name);
 
             return array();
         } else {
@@ -113,5 +180,10 @@ class FileDumper
         self::$doctrine = $doctrine;
         self::$em = self::$doctrine->getEntityManager();
         self::$em->getConnection()->getConfiguration()->setSQLLogger(null);
+    }
+
+    public static function setMongoDb($mongo)
+    {
+        self::$mongoDb = $mongo;
     }
 }

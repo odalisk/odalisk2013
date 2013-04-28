@@ -25,6 +25,14 @@ abstract class BaseCommand extends ContainerAwareCommand
      */
     private $em;
 
+    /**
+     * Holds our instance of the MongoManager
+     *
+     * @var $mm
+     */
+    private $mm;
+
+
     private $formatter = null;
 
     private $stats = array();
@@ -82,6 +90,16 @@ abstract class BaseCommand extends ContainerAwareCommand
         }
 
         return $this->em;
+    }
+
+
+    protected function getMongoDbManager()
+    {
+        if (null == $this->mm) {
+            $this->mm = $this->getContainer()->get('doctrine_mongodb')->getManager();
+        }
+
+        return $this->mm;
     }
 
     protected function getEntityRepository($repositoryName, $managerName = null)
