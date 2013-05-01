@@ -13,7 +13,17 @@ class DcatPortal extends BasePortal
     public function __construct()
     {
         $this->criteria = array(
-            'setName' => '//h2[@id="datasetName" and @class="clipText currentViewName"]'
+            'setName' => '//Dataset/label/text()',
+            'setSummary' => '//Dataset/description/text()',
+            'setReleasedOn' => '//Dataset//relation/Description[label="deposit_date"]/value/text()',
+            'setOwner' => '//Dataset/creator/Description/name/text()',
+            'setMaintainer' => '//Dataset//relation/Description[label="creator"]/value/text()',
+            'setLastUpdatedOn' => '//Dataset//relation/Description[label="update_date"]/value/text()',
+            'setProvider' => '//Dataset//relation/Description[label="creator"]/value/text()',
+            'setRawLicense' => '//Dataset//relation/Description[label="licence"]/value/text()',
+            'setCategories' => '//Dataset//relation/Description[label="categories"]/value/text()',
+            'setFormats' => '//Dataset//distribution/format/IMT/value/text()',
+            'setUrl' => '//Dataset/@about/text()'
         );
     }
 

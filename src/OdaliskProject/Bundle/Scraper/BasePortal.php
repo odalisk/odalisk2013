@@ -176,6 +176,81 @@ abstract class BasePortal
         $data = null;
     }
 
+    public function analyseDcatContent($rdf, &$dataset)
+    {
+
+        $crawler = new Crawler();
+        $crawler->addXmlContent($rdf);
+        echo $crawler->text();
+        //echo $crawler->filterXPath('RDF/Dataset')->text();
+
+
+        $data = array();
+
+
+        if (0 != count($crawler)) {
+            // Default data extraction process
+            $this->defaultDcatExtraction($crawler, $data);
+
+            // This is the default, it should be good enough for most cases
+            $this->defaultNormalization($data);
+        }
+
+        $dataset->populate($data);
+        $crawler = null;
+        $data = null;
+    }
+
+    /**
+     * This function goes through the criteria array, and extracts the information. If
+     * an XPath expression yields several nodes, their value is joined using the ';'
+     * character.
+     *
+     * @param Crawler $crawler the crawler
+     * @param array   $data    the data we are gathering
+     */
+    protected function defaultDcatExtraction($crawler, &$data)
+    {
+        foreach ($this->criteria as $name => $path) {
+            //error_log($path);
+            $nodes = $crawler->filterXPath($path);
+            
+            if (0 < count($nodes)) {
+                error_log('Here4');
+                $data[$name] = join(
+                    ";",
+                    array_filter(
+                        $nodes->each(
+                            function($node,$i) {
+                                return trim($node->nodeValue);
+                            }
+                        ),
+                        'strlen'
+                    )
+                );
+            }
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     /**
      * This function goes through the criteria array, and extracts the information. If
      * an XPath expression yields several nodes, their value is joined using the ';'

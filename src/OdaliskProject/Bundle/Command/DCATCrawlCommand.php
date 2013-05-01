@@ -115,11 +115,6 @@ class DCATCrawlCommand extends BaseCommand
                     if (null != $url) {
                         $dispatcher->queue($url, 'OdaliskProject\Bundle\Scraper\Tools\FileDumper::saveRdfToDisk');
 
-
-
-
-
-
                     } else {
                         // We reached the end of the queue, remove it from the pool
                         unset($queries[$name]);

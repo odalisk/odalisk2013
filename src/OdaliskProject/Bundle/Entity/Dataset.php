@@ -29,6 +29,13 @@ class Dataset
     protected $url;
 
     /**
+     * @var string $idMongo
+     *
+     * @ORM\Column(name="idMongo", type="string", nullable=true, length=255)
+     */
+    protected $idMongo;
+
+    /**
      * @var string $name
      *
      * @ORM\Column(name="name", type="string", nullable=true, length=255)
@@ -177,6 +184,26 @@ class Dataset
     public function getUrl()
     {
         return $this->url;
+    }
+
+    /**
+     * Set idMongo
+     *
+     * @param string $idMongo
+     */
+    public function setIdMongo($idMongo)
+    {
+        $this->idMongo = $idMongo;
+    }
+
+    /**
+     * Get idMongo
+     *
+     * @return string
+     */
+    public function getIdMongo()
+    {
+        return $this->idMongo;
     }
 
     /**
