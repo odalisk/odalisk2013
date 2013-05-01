@@ -81,7 +81,7 @@ class FileDumper
         $dm->persist($dcatDataset);
         $dm->flush();
 
-        //unlink($filename);
+        unlink($filename);
 
         if (0 == self::$count % 100 || self::$count == self::$totalCount) {
            error_log('[Get Rdf] ' . self::$count . ' / ' . self::$totalCount . ' done');
