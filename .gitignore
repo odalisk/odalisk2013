@@ -4,6 +4,8 @@ app/logs/*
 vendor/*
 web/bundles/*
 data/*
+!web/bundles/odalisk/dcat/
+web/bundles/odalisk/dcat/*
 composer.lock
 !.gitkeep
 !vendor/assets
