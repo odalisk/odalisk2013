@@ -1,6 +1,25 @@
 Installation
 ============
 
+Prerequirement
+-----------------
+If you want to experiment the Odalisk functionalities on your own server for instance, you will may be need to install some software, tools. Here are some points you should think about : 
+
+The Installation of a server, a Lamp server should be a good point to start
+
+Then do not forget to have nodejs installed on your server/computer.- [NodeJs](http://www.nodejs.org.com).
+
+With npm, install also less : 
+```bash
+npm install -g less
+```
+
+If you do not have already a Git Account, follow the ultimate guide : [SetUp Git](https://help.github.com/articles/set-up-git).
+
+
+
+
+
 Initialize the project
 -----------------
 
@@ -64,13 +83,10 @@ Now just point your virtualhost to ``` path/to/your/project/web ``` and you're g
 ln -s /path/to/odalisk/web/ /var/www/nameOfTheLink
 ```
 
-If you use Apache on Linux, do not forget to add the site in the site-available folder and then enable it.
-
-
+If you use Apache on Linux, do not forget to add the site in the site-available folder and then enable it. Then reload/restart the server.
 
 Some useful pointers to get started
 -----------------------------------
 
 - [Symfony2](http://symfony.com)
-- [KnpRadBundle](http://rad.knplabs.com/)
 - [Doctrine2](http://www.doctrine-project.org/)
