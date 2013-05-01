@@ -180,17 +180,15 @@ abstract class BasePortal
     {
 
         $crawler = new Crawler();
-        $crawler->addXmlContent($rdf);
-        echo $crawler->text();
-        //echo $crawler->filterXPath('RDF/Dataset')->text();
-
-
+        $crawler->addContent($rdf);
         $data = array();
 
 
         if (0 != count($crawler)) {
             // Default data extraction process
             $this->defaultDcatExtraction($crawler, $data);
+
+            $this->additionalDcatExtraction($crawler, $data);
 
             // This is the default, it should be good enough for most cases
             $this->defaultNormalization($data);
@@ -216,7 +214,7 @@ abstract class BasePortal
             $nodes = $crawler->filterXPath($path);
             
             if (0 < count($nodes)) {
-                error_log('Here4');
+                error_log("I am Here");
                 $data[$name] = join(
                     ";",
                     array_filter(
@@ -231,23 +229,6 @@ abstract class BasePortal
             }
         }
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -289,6 +270,32 @@ abstract class BasePortal
     protected function additionalExtraction($crawler, &$data)
     {
     }
+
+
+    /**
+     * Method that provides a system to splut the categories
+     *
+     * @param Crawler $crawler the crawler
+     * @param array   $data    the data we are gathering
+     */
+    protected function additionalDcatExtraction($crawler, &$data)
+    {
+         if (array_key_exists('setCategories', $data)) {
+            if (is_array(json_decode($data['setCategories']))) {
+                $data['setCategories'] = implode(';', json_decode($data['setCategories']));
+            }
+        }
+    }
+
+
+
+
+
+
+
+
+
+
 
     protected function defaultNormalization(&$data)
     {

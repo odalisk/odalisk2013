@@ -19,8 +19,8 @@ class DCATGenerateCommand extends BaseCommand
     protected function configure()
     {
         $this
-            ->setName('odalisk:dcat:generate')
-            ->setDescription('Generate a DCAT file for a portal already crawled')
+            ->setName('odalisk:dcat:generateFromSQL')
+            ->setDescription('DCAT Generate a DCAT file for a portal already crawled')
             ->addArgument('platform', InputArgument::OPTIONAL,
                 'Which platform do you want to generate a DCAT file for ?'
             )
@@ -84,7 +84,7 @@ class DCATGenerateCommand extends BaseCommand
                 foreach ($datasets as $dataset) {
                     $this->generateDatasetInfo($portal, $dataset);
                 }
-        $filename = $portal->getName() . ".rdf";
+        $filename = "web/bundles/odalisk/dcat/" . $portal->getName() . ".rdf";
 
         if (!$handle = fopen($filename, 'a')) {
             error_log("Impossible d'ouvrir le fichier" . $filename);
@@ -101,23 +101,28 @@ class DCATGenerateCommand extends BaseCommand
     }
     
     protected function generatePortalInfo(Portal $portal){
-        $filename = $portal->getName() . ".rdf";
+        $filename = "web/bundles/odalisk/dcat/" . $portal->getName() . ".rdf";
         
         // Assurons nous que le fichier est accessible en écriture
 
         // Dans notre exemple, nous ouvrons le fichier $filename en mode d'ajout
         // Le pointeur de fichier est placé à la fin du fichier
         // c'est là que $somecontent sera placé
-        if (!$handle = fopen($filename, 'a')) {
-            error_log("Impossible d'ouvrir le fichier" . $filename);
+        if (!$handle = fopen($filename, 'w')) {
+            error_log("Impossible to open the file " . $filename);
               exit;
         }
 
        // Ecrivons quelque chose dans notre fichier.
            // Select language based on location
-            $lang = array(  'European Union' => "en", 
-                            'France'         => "fr",
+            $langArray = array( 'France'         => "fr",
                          );
+
+            if( array_key_exists($portal->getCountry(), $langArray) )
+                $lang = $langArray[$portal->getCountry()];
+            else
+                $lang = "en";
+
 
             fwrite($handle,"<?xml version=\"1.0\" encoding=\"utf-8\"?>\n");
             fwrite($handle,"<rdf:RDF xmlns:foaf=\"http://xmlns.com/foaf/0.1/\"\n");
@@ -130,19 +135,19 @@ class DCATGenerateCommand extends BaseCommand
             fwrite($handle,"\t\t xmlns:owl=\"http://www.w3.org/2002/07/owl#\">\n");
 
                 fwrite($handle,"\t<dcat:Catalog rdf:about=\"" . $portal->getUrl() . "\">\n");
-                    fwrite($handle,"\t\t<dct:title xml:lang=\"" . $lang[$portal->getCountry()] . "\">" .$portal->getName() . "</dct:title>\n");
-                    fwrite($handle,"\t\t<dct:description xml:lang=\"" . $lang[$portal->getCountry()] . "\"></dct:description>\n");
+                    fwrite($handle,"\t\t<dct:title xml:lang=\"" . $lang . "\">" .$portal->getName() . "</dct:title>\n");
+                    fwrite($handle,"\t\t<dct:description xml:lang=\"" . $lang . "\"></dct:description>\n");
                     fwrite($handle,"\t\t<foaf:homepage rdf:resource=\"" . $portal->getUrl() . "\"/>\n");
                     fwrite($handle,"\t\t<dct:spatial>\n");
                         fwrite($handle,"\t\t\t<dct:Location>\n");
-                            fwrite($handle,"\t\t\t\t<rdfs:label xml:lang=\"" . $lang[$portal->getCountry()] . "\">" . $portal->getCountry() . "</rdfs:label>\n");
+                            fwrite($handle,"\t\t\t\t<rdfs:label xml:lang=\"" . $lang . "\">" . $portal->getCountry() . "</rdfs:label>\n");
                             fwrite($handle,"\t\t\t\t<rdfs:seeAlso rdf:resource=\"\"/>\n");
                         fwrite($handle,"\t\t\t</dct:Location>\n");
                     fwrite($handle,"\t\t</dct:spatial>\n");
                     fwrite($handle,"\t\t<dct:license rdf:resource=\"\"/>\n");
                     fwrite($handle,"\t\t<dct:publisher>\n");
                         fwrite($handle,"\t\t\t<foaf:Organization>\n");
-                            fwrite($handle,"\t\t\t\t<dct:title xml:lang=\"" . $lang[$portal->getCountry()] . "\">" . $portal->getEntity() . "</dct:title>\n");
+                            fwrite($handle,"\t\t\t\t<dct:title xml:lang=\"" . $lang . "\">" . $portal->getEntity() . "</dct:title>\n");
                             fwrite($handle,"\t\t\t\t<foaf:homepage rdf:resource=\"" . $portal->getUrl() . "\"/>\n");
                         fwrite($handle,"\t\t\t</foaf:Organization>\n");
                     fwrite($handle,"\t\t</dct:publisher>\n");
@@ -150,13 +155,13 @@ class DCATGenerateCommand extends BaseCommand
     
         
 
-        error_log("réussi");
+        error_log("[DCATGeneration] End of the Generation");
         fclose($handle);
 
     }
 
     protected function generateDatasetInfo(Portal $portal, Dataset $dataset){
-        $filename = $portal->getName() . ".rdf";
+        $filename = "web/bundles/odalisk/dcat/" . $portal->getName() . ".rdf";
         
         // Assurons nous que le fichier est accessible en écriture
 
@@ -164,25 +169,30 @@ class DCATGenerateCommand extends BaseCommand
         // Le pointeur de fichier est placé à la fin du fichier
         // c'est là que $somecontent sera placé
         if (!$handle = fopen($filename, 'a')) {
-            error_log("Impossible d'ouvrir le fichier" . $filename);
+            error_log("Impossible to open the file " . $filename);
               exit;
         }
 
        // Ecrivons quelque chose dans notre fichier.
            // Select language based on location
-            $lang = array(  'European Union' => "en", 
+            $langArray = array(  'European Union' => "en", 
                             'France'         => "fr",
                          );
+
+            if( array_key_exists($portal->getCountry(), $langArray) )
+                $lang = $langArray[$portal->getCountry()];
+            else
+                $lang = "en";
 
             fwrite($handle,"\t\t<dcat:dataset>\n");
             fwrite($handle,"\t\t\t<dcat:Dataset rdf:about=\"" . $dataset->getUrl() . "\">\n"); 
             fwrite($handle,"\t\t\t\t<dct:issued rdf:datatype=\"http://www.w3.org/2001/XMLSchema#date\">" . $dataset->getReleasedOn() . "</dct:issued>\n");
             fwrite($handle,"\t\t\t\t<dct:modified rdf:datatype=\"http://www.w3.org/2001/XMLSchema#date\">" . $dataset->getLastUpdatedOn() . "</dct:modified>\n");
             fwrite($handle,"\t\t\t\t<dct:creator>" . $dataset->getProvider() . "</dct:creator>\n");
-            fwrite($handle,"\t\t\t\t<dct:description xml:lang=\"" . $lang['France'] . "\">" . $dataset->getSummary() . "</dct:description>\n");
+            fwrite($handle,"\t\t\t\t<dct:description xml:lang=\"" . $lang . "\">" . $dataset->getSummary() . "</dct:description>\n");
             fwrite($handle,"\t\t\t\t<dct:license rdf:resource=\"\"/>\n");
 
-            fwrite($handle,"\t\t\t\t<dcat:keyword xml:lang=\"" . $lang['France'] . "\"></dcat:keyword>\n");
+            fwrite($handle,"\t\t\t\t<dcat:keyword xml:lang=\"" . $lang . "\"></dcat:keyword>\n");
             fwrite($handle,"\t\t\t\t<dcat:distribution>\n");
                fwrite($handle,"\t\t\t\t\t<dcat:Download>\n");
                   fwrite($handle,"\t\t\t\t\t\t<dcat:accessURL>" . $dataset->getUrl() . "</dcat:accessURL>\n");
@@ -208,7 +218,7 @@ class DCATGenerateCommand extends BaseCommand
             fwrite($handle,"\t\t\t\t</dcat:distribution>\n");
             fwrite($handle,"\t\t\t\t<dct:publisher>\n");
                fwrite($handle,"\t\t\t\t\t<foaf:Organization>\n");
-                  fwrite($handle,"\t\t\t\t\t\t<dct:title xml:lang=\"" . $lang['France'] . "\">" . $dataset->getOwner() . "</dct:title>\n");
+                  fwrite($handle,"\t\t\t\t\t\t<dct:title xml:lang=\"" . $lang . "\">" . $dataset->getOwner() . "</dct:title>\n");
                   fwrite($handle,"\t\t\t\t\t\t<foaf:homepage rdf:resource=\"" . $portal->getUrl() . "\"/>\n");
                fwrite($handle,"\t\t\t\t\t</foaf:Organization>\n");
             fwrite($handle,"\t\t\t\t</dct:publisher>\n");

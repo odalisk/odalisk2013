@@ -37,17 +37,21 @@
     <tr>
         <td class="key">Formats <i class="icon-info-sign icon-info" rel="popover" title="Formats" data-content="To normalize formats, we used some aliases<br/><strong>Original format name</strong> : {{ dataset.rawFormats}}."></i></td>
         <td>
-            {% for format in dataset.formats %}
-                {% if format.isOpen == 1 %}
-                    <span class="label label-success" rel="popover" title="{{ format.format }}" data-content="This format is as open as possible ! The specification is public, and he it is computer readable, enjoy !">{{ format.format }}</span>
-                {% elseif format.hasSpec == 1 %}
-                    <span class="label label-info" rel="popover" title="{{ format.format }}" data-content="This format is not fully open ! The specification is public, and it is computer readable, but this format is proprietary.">{{ format.format }}</span>
-                {% elseif format.isComputerReadable == 1 %}
-                    <span class="label label-warning" rel="popover" title="{{ format.format }}" data-content="This format is not very open ! The specification is not public and this format is proprietary.">{{ format.format }}</span>
-                {% else %}
-                    <span class="label label-important" rel="popover" title="{{ format.format }}" data-content="This format is not open at all ! You can just download it.">{{ format.format }}</span>
-                {% endif %}
-            {% endfor %}
+            {% if dataset.formats is not defined or dataset.formats is empty %}
+            No format indicated
+            {% else %}
+                {% for format in dataset.formats %}
+                    {% if format.isOpen == 1 %}
+                        <span class="label label-success" rel="popover" title="{{ format.format }}" data-content="This format is as open as possible ! The specification is public, and he it is computer readable, enjoy !">{{ format.format }}</span>
+                    {% elseif format.hasSpec == 1 %}
+                        <span class="label label-info" rel="popover" title="{{ format.format }}" data-content="This format is not fully open ! The specification is public, and it is computer readable, but this format is proprietary.">{{ format.format }}</span>
+                    {% elseif format.isComputerReadable == 1 %}
+                        <span class="label label-warning" rel="popover" title="{{ format.format }}" data-content="This format is not very open ! The specification is not public and this format is proprietary.">{{ format.format }}</span>
+                    {% else %}
+                        <span class="label label-important" rel="popover" title="{{ format.format }}" data-content="This format is not open at all ! You can just download it.">{{ format.format }}</span>
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
             </td>
     </tr>
     <tr>
@@ -70,4 +74,5 @@
             {% endif %}
         </td>
     </tr>
+    
 </table>

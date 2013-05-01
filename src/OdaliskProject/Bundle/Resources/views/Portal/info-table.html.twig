@@ -21,5 +21,11 @@
         <td class="key">Last crawl <i class="icon-info-sign icon-info" rel="popover" title="Last crawl" data-content="Last time we crawled the portal."></i></td>
         <td class="value">{{ portal.createdAt|date("d/m/Y") }}</td>
     </tr>
+
+    <tr>
+        <td class="key">DCAT<i class="icon-info-sign icon-info" rel="popover" title="DCAT File" data-content="A DCAT file generated with our database."></i></td>
+        <td class="value"><a href='/odalisk_web_propre/bundles/odalisk/dcat/{{ portal.name }}.rdf'>Link to the DCAT file</a></td>
+    </tr>
     {% endif %}
+
 </table>

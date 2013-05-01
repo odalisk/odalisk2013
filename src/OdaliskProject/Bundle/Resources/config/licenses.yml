@@ -15,6 +15,15 @@ parameters:
             reuse: true
             redistribution: true
             commercial: false
+        'CC':
+            aliases:
+                - 'Creative Commons'
+                - 'http://www.opendefinition.org/licenses/cc-by'
+                - 'http://www.opendefinition.org/licenses/odc-by'
+            authorship: true
+            reuse: true
+            redistribution: true
+            commercial: true
         'CCW/CROWN':
             aliases:
                 - 'OKD Compliant::UK Crown Copyright with data.gov.uk rights'
@@ -99,6 +108,7 @@ parameters:
                 # - 'OKD Compliant'
                 - 'UK Open Government Licence (OGL)'
                 - 'OKD Compliant::UK Open Government Licence (OGL)'
+                - 'http://reference.data.gov.uk/id/open-government-licence'
             authorship: true
             reuse: true
             redistribution: true

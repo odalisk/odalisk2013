@@ -13,17 +13,17 @@ class DcatPortal extends BasePortal
     public function __construct()
     {
         $this->criteria = array(
-            'setName' => '//Dataset/label/text()',
-            'setSummary' => '//Dataset/description/text()',
-            'setReleasedOn' => '//Dataset//relation/Description[label="deposit_date"]/value/text()',
-            'setOwner' => '//Dataset/creator/Description/name/text()',
-            'setMaintainer' => '//Dataset//relation/Description[label="creator"]/value/text()',
-            'setLastUpdatedOn' => '//Dataset//relation/Description[label="update_date"]/value/text()',
-            'setProvider' => '//Dataset//relation/Description[label="creator"]/value/text()',
-            'setRawLicense' => '//Dataset//relation/Description[label="licence"]/value/text()',
-            'setCategories' => '//Dataset//relation/Description[label="categories"]/value/text()',
-            'setFormats' => '//Dataset//distribution/format/IMT/value/text()',
-            'setUrl' => '//Dataset/@about/text()'
+            'setName' => '//dataset/label/text()',
+            'setSummary' => '//dataset/description/text()',
+            'setReleasedOn' => '//dataset//relation/description[label="date_released"]/value/text()',
+            'setOwner' => '//dataset/creator/description/name/text()',
+            'setMaintainer' => '//dataset//contributor/description/name',
+            'setLastUpdatedOn' => '//dataset//relation/description[label="update_date"]/value/text()',
+            'setProvider' => '//dataset//relation/description[label="creator"]/value/text()',
+            'setRawLicense' => '//rights/@*',
+            'setCategories' => '//dataset//relation/description[label="categories"]/value/text()',
+            'setFormats' => '//dataset//distribution/format/imt/value/text()',
+            'setUrl' => '//dataset/@*'
         );
     }
 
