@@ -154,7 +154,8 @@ abstract class BasePortal
 
     public function analyseHtmlContent($html, &$dataset)
     {
-        $crawler = new Crawler($html);
+        $crawler = new Crawler();
+        $crawler->addHtmlContent($html, 'UTF-8');
         $data = array();
 
         if (0 != count($crawler)) {
@@ -180,7 +181,7 @@ abstract class BasePortal
     {
 
         $crawler = new Crawler();
-        $crawler->addContent($rdf);
+        $crawler->addHtmlContent($rdf, 'UTF-8');
         $data = array();
 
 
