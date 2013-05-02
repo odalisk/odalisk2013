@@ -25,11 +25,11 @@ class CrawlStatCommand extends BaseCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
 
-        /*
+        
         // Store the container so that we have an easy shortcut
         $container = $this->getContainer();
         $platformServices = $container->getParameter('config.enabled_portals.adhoc');
-        $path = $container->getParameter('kernel.project_root') . '/data/';
+        $proot = $container->getParameter('kernel.project_root');
         $cmd = 'cut -c 17-19 ';
         // Initialize some arrays
         $stats = array();
@@ -62,8 +62,7 @@ class CrawlStatCommand extends BaseCommand
                 error_log($code . ' => ' . $count . '/' . $stats[$name]['total']);
             }
         }
-        */
-        error_log(json_decode("\u00e9"));
+        
     }
     
     

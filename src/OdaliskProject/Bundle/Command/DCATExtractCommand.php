@@ -79,7 +79,6 @@ class DCATExtractCommand extends BaseCommand
                 $platformPath = $dataPath . $name . '/';
 
                 $count = 0;
-                $total = count(glob($platformPath . '*')) - 1;
                 $codes = array();
 
                 //$datasetsOfPortal = $dcatDatasetsRepo->findBy(
@@ -117,7 +116,7 @@ class DCATExtractCommand extends BaseCommand
                     $data = null;
 
                     if (0 == ($count % 100) || $count == $total) {
-                        error_log('[Analysis] ' . $count . ' / ' . $total . ' done');
+                        error_log('[Analysis] ' . $count . ' done');
                         error_log('[Analysis] currently using ' . memory_get_usage(true) / (1024 * 1024) . 'MB of memory');
                     }
 
@@ -125,22 +124,10 @@ class DCATExtractCommand extends BaseCommand
                 }
 
 
-/*
-                Pour tous les documents  de la collection DcatDatasets ayant un portalName = plateforme en cours.
-
-                    //Penser à ajouter un champ IdMongo dans le Dataset Entity pour pouvoir récupérer un lien de téléchargement du fichier DCAT du dataset
-                    //Penser à ajouter un lien de téléchargement du fichier DCAT du datasets dans l'interface graphique + fonction de recherche du content du doc mongoDB qui génère un fichier avec le <nom du dataset>.rdf
-                    dt.FichierDCatMongo = idDatasetMongo
-
-                FP
-*/
-
-
                 $portal->setDatasetCount($count);
                 $em->persist($portal);
 
-                error_log('[Analysis] ' . $count . ' / ' . $total . ' done');
-                error_log('[Analysis] ' . ($total - $count) . ' datasets failed to download' . "\n");
+                error_log('[Analysis] ' . $count . ' datasets analysed');
                 error_log('[Analysis] Return codes repartition :');
                 foreach ($codes as $code => $count) {
                    error_log('[Analysis] ' . $code . ' > ' . $count);

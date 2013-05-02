@@ -215,7 +215,6 @@ abstract class BasePortal
             $nodes = $crawler->filterXPath($path);
             
             if (0 < count($nodes)) {
-                error_log("I am Here");
                 $data[$name] = join(
                     ";",
                     array_filter(

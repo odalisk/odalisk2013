@@ -42,7 +42,7 @@
             {% else %}
                 {% for format in dataset.formats %}
                     {% if format.isOpen == 1 %}
-                        <span class="label label-success" rel="popover" title="{{ format.format }}" data-content="This format is as open as possible ! The specification is public, and he it is computer readable, enjoy !">{{ format.format }}</span>
+                        <span class="label label-success" rel="popover" title="{{ format.format }}" data-content="This format is as open as possible ! The specification is public, and it is computer readable, enjoy !">{{ format.format }}</span>
                     {% elseif format.hasSpec == 1 %}
                         <span class="label label-info" rel="popover" title="{{ format.format }}" data-content="This format is not fully open ! The specification is public, and it is computer readable, but this format is proprietary.">{{ format.format }}</span>
                     {% elseif format.isComputerReadable == 1 %}

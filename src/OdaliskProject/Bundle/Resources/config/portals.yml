@@ -6,12 +6,12 @@ parameters:
         #- new_york
         #- usa_gov
         #- uk_gov
-        #- eu_gov
+        - eu_gov
         #- data_publica
         #- data_market
-        - montpellier
+        #- montpellier
     config.enabled_portals.dcat:
-        - dcat_eu_gov
+        #- dcat_eu_gov
 
     # All the information we need for each platfom. Will be used to initialize the services
     portals.nantes:
