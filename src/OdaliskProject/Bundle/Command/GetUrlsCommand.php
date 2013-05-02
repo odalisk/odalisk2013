@@ -37,7 +37,7 @@ class GetUrlsCommand extends BaseCommand
         $dataPath = $container->getParameter('config.file_dumper.data_path');
         FileDumper::setBasePath($dataPath);
         // Get the configuration value from config/app.yml : which platforms are enabled?
-        $platformServices = $container->getParameter('config.enabled_portals');
+        $platformServices = $container->getParameter('config.enabled_portals.adhoc');
         // Initialize some arrays
         $platforms = array();
 

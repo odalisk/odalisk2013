@@ -14,13 +14,13 @@ use OdaliskProject\Bundle\Entity\Dataset;
 /**
  * A command that will generate a DCAT file using data from Odalisk SQL database
  */
-class DCATGenerateCommand extends BaseCommand
+class GenerateDCATCommand extends BaseCommand
 {
     protected function configure()
     {
         $this
-            ->setName('odalisk:dcat:generateFromSQL')
-            ->setDescription('DCAT Generate a DCAT file for a portal already crawled')
+            ->setName('odalisk:generate:dcat')
+            ->setDescription('Generate a DCAT file for a portal already crawled')
             ->addArgument('platform', InputArgument::OPTIONAL,
                 'Which platform do you want to generate a DCAT file for ?'
             )
@@ -35,7 +35,11 @@ class DCATGenerateCommand extends BaseCommand
         // Store the container so that we have an easy shortcut
         $container = $this->getContainer();
         // Get the configuration value from config/app.yml : which platforms are enabled?
-        $platformServices = $container->getParameter('config.enabled_portals');
+        $platformServices = $container->getParameter('config.enabled_portals.adhoc');
+        foreach($container->getParameter('config.enabled_portals.dcat') as $it){
+            array_push($platformServices, $it);
+        }
+        
         // Get the data directory
         $dataPath = $container->getParameter('config.file_dumper.data_path');
         // Entity repository for datasets_crawls & entity manager

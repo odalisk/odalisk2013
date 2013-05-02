@@ -28,7 +28,7 @@ class CrawlStatCommand extends BaseCommand
         /*
         // Store the container so that we have an easy shortcut
         $container = $this->getContainer();
-        $platformServices = $container->getParameter('config.enabled_portals');
+        $platformServices = $container->getParameter('config.enabled_portals.adhoc');
         $path = $container->getParameter('kernel.project_root') . '/data/';
         $cmd = 'cut -c 17-19 ';
         // Initialize some arrays

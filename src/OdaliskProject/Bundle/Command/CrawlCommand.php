@@ -37,7 +37,7 @@ class CrawlCommand extends BaseCommand
         // Get the file dumper
         $this->initDumper($container->getParameter('config.file_dumper.data_path'), $container->get('doctrine'));
         // Get the configuration value from config/app.yml : which platforms are enabled?
-        $platformServices = $container->getParameter('config.enabled_portals');
+        $platformServices = $container->getParameter('config.enabled_portals.adhoc');
 
         //Allow the logs of SQL requests
         //$em = $this->getEntityManager();

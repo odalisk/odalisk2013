@@ -1,5 +1,5 @@
 parameters:
-    config.enabled_portals:
+    config.enabled_portals.adhoc:
         #- nantes
         #- loire_atlantique
         #- socrata
@@ -9,7 +9,8 @@ parameters:
         #- eu_gov
         #- data_publica
         #- data_market
-        #- montpellier
+        - montpellier
+    config.enabled_portals.dcat:
         - dcat_eu_gov
 
     # All the information we need for each platfom. Will be used to initialize the services
