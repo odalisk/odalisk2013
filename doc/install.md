@@ -90,3 +90,8 @@ Some useful pointers to get started
 
 - [Symfony2](http://symfony.com)
 - [Doctrine2](http://www.doctrine-project.org/)
+
+
+To learn some information about the commands of the console
+-----------------------------------
+- [HowToUseOdaliskConsole](https://github.com/odalisk/odalisk2013/blob/master/doc/howto.md)

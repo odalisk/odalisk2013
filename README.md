@@ -8,4 +8,4 @@ Installation
 
 All the setup instructions can be found [here](https://github.com/odalisk/odalisk2013/blob/master/doc/install.md)
 
-
+The guide of the console commands is [here](https://github.com/odalisk/odalisk2013/blob/master/doc/howto.md)
