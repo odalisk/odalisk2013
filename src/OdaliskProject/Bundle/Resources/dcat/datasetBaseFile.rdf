@@ -1,0 +1,38 @@
+<dcat:Dataset>
+
+	<dct:title></dct:title>
+	<dct:description></dct:description>
+
+	<dct:issued rdf:datatype="http://www.w3.org/2001/XMLSchema#date"></dct:issued>
+	<dct:modified rdf:datatype="http://www.w3.org/2001/XMLSchema#date"></dct:modified>
+
+	<dct:identifier></dct:identifier>
+	
+	<dcat:keyword></dcat:keyword>
+	
+	<dct:language rdf:resource="http://id.loc.gov/vocabulary/iso639-1/XX"/>
+
+	<dct:temporal>
+		
+	</dct:temporal>
+
+	<dct:spatial>
+		<dct:Location>								
+			<rdfs:label></rdfs:label>
+		</dct:Location>
+	</dct:spatial>
+	
+	<dct:accrualPeriodicity>
+		<dct:Frequency></dct:Frequency>
+	</dct:accrualPeriodicity>
+
+	<dcat:landingPage></dcat:landingPage>
+
+	<dct:publisher>
+		<foaf:Organization>
+			<rdfs:label></rdfs:label> 
+			<foaf:status></foaf:status>
+		</foaf:Organization>
+	</dct:publisher>
+
+</dcat:Dataset>

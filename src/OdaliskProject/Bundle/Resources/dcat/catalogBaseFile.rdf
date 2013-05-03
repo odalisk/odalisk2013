@@ -9,7 +9,7 @@
          xmlns:owl="http://www.w3.org/2002/07/owl#">
 
 	<dcat:Catalog>
-		<dct:title>Title</dct:title>
+		<dct:title></dct:title>
 		<dct:description></dct:description>
 
 		<dct:issued rdf:datatype="http://www.w3.org/2001/XMLSchema#date"></dct:issued>
@@ -17,13 +17,14 @@
 	
 		<dct:language rdf:resource="http://id.loc.gov/vocabulary/iso639-1/XX"/>
 		
-		<dct:license>									 
+		<dct:license rdf:resource="">									 
 			<rdfs:label></rdfs:label> 
 		</dct:license>
 
 		<dct:spatial>
 			<dct:Location>								
 				<rdfs:label></rdfs:label>
+				<owl:seeAlso rdf:resource=""/>
 			</dct:Location>
 		</dct:spatial>
 
