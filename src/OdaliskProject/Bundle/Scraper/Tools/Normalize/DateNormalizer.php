@@ -6,7 +6,7 @@ class DateNormalizer
 {
     /**
      * Match some regex to translate months from word to number ie: jan => 01
-     *
+     * 
      * @var string
      */
     protected $translateMonths = array(
