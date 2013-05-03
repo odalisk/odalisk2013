@@ -27,7 +27,7 @@ abstract class BaseInCiteSolutionPortal extends BasePortal
             'setOwner' => '//span[.="Propriétaire : "]/../span[@class="value"]/text()',
             //'Technical data' => ".//*[@class='tx_icsoddatastore_pi1_technical_data separator']/span[@class='value']",
             //Can't access the format unless the validation of the license on the website
-            'setFormats' => '//*[@id="c100"]/div/div/div[2]/div[1]/div/div[4]/div[1]/div[1]/a/img/@alt',
+            'setFormats' => '//*[@id="c100"]/div/div/div[2]/div[1]/div/div[4]/div[1]/div[1]/a/img/@alt', 
             'setProvider' => '//span[.="Diffuseur : "]/../span[@class="value"]/text()'
         );
     }

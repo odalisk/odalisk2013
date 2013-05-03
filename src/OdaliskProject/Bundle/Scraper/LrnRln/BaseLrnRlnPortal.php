@@ -63,7 +63,6 @@ abstract class BaseLrnRlnPortal extends BasePortal
                     }
                     , $nodes);
         }
-
         $this->totalCount = count($this->urls);
 
         return $this->urls;

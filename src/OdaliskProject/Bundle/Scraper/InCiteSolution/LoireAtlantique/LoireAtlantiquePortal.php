@@ -33,6 +33,6 @@ class LoireAtlantiquePortal extends BaseInCiteSolutionPortal
             'setProvider' => '//span[.="Diffuseur : "]/../span[@class="value"]/text()'
         );
 
-    }
+    } 
 
 }
