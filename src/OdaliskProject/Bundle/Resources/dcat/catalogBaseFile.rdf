@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rdf:RDF xmlns:foaf="http://xmlns.com/foaf/0.1/"
+         xmlns:skos="http://www.w3.org/2004/02/skos/core#"
+         xmlns:dcat="http://www.w3.org/ns/dcat#"
+         xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+         xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+         xmlns:dct="http://purl.org/dc/terms/"
+         xmlns:dctypes="http://purl.org/dc/dcmitype/"
+         xmlns:owl="http://www.w3.org/2002/07/owl#">
+
+	<dcat:Catalog>
+		<dct:title>Title</dct:title>
+		<dct:description></dct:description>
+
+		<dct:issued rdf:datatype="http://www.w3.org/2001/XMLSchema#date"></dct:issued>
+		<dct:modified rdf:datatype="http://www.w3.org/2001/XMLSchema#date"></dct:modified>
+	
+		<dct:language rdf:resource="http://id.loc.gov/vocabulary/iso639-1/XX"/>
+		
+		<dct:license>									 
+			<rdfs:label></rdfs:label> 
+		</dct:license>
+
+		<dct:spatial>
+			<dct:Location>								
+				<rdfs:label></rdfs:label>
+			</dct:Location>
+		</dct:spatial>
+
+		<foaf:homepage rdf:resource=""/>
+
+		<dct:publisher>
+			<foaf:Organization>
+				<rdfs:label></rdfs:label> 
+				<foaf:status></foaf:status>
+			</foaf:Organization>
+		</dct:publisher>
+		
+		<dcat:dataset>
+		</dcat:dataset>
+
+	</dcat:Catalog>
+</rdf:RDF>
