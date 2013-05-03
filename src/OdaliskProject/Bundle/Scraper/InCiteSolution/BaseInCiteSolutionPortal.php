@@ -17,18 +17,18 @@ abstract class BaseInCiteSolutionPortal extends BasePortal
     {
         $this->criteria = array(
             'setName' => '//*[@id="c100"]/div/div/div[1]/h1/text()',
-            'setCategories' => '//*[@id="c100"]/div/div/div[1]/div[2]/div[3]/span[2]/p/text()',
+            'setCategories' => '//span[.="Thématique(s) : "]/../span[@class="value"]/text()', 
             'setRawLicense' => '//*[@id="c100"]/div/div/div[2]/div[1]/div/div/span[2]',
             //'Update Frequency' => '//*[@id="c100"]/div/div/div[1]/div[2]/div[8]/span[2]',
             'setReleasedOn' => '//*[@id="c100"]/div/div/div[1]/div[1]/span',
-            'setLastUpdatedOn' => '//*[@id="c100"]/div/div/div[1]/div[2]/div[7]/span[2]',
+            'setLastUpdatedOn' => '//span[.="Mis à jour le : "]/../span[@class="value"]/text()',
             'setSummary' => '//*[@id="c100"]/div/div/div[1]/div[2]/div[2]/span/text()',
-            'setMaintainer' => '//*[@id="c100"]/div/div/div[1]/div[2]/div[9]/span[2]',
-            'setOwner' => '//*[@id="c100"]/div/div/div[1]/div[2]/div[10]/span[2]',
+            'setMaintainer' => '//span[.="Gestionnaire : "]/../span[@class="value"]/text()',
+            'setOwner' => '//span[.="Propriétaire : "]/../span[@class="value"]/text()',
             //'Technical data' => ".//*[@class='tx_icsoddatastore_pi1_technical_data separator']/span[@class='value']",
             //Can't access the format unless the validation of the license on the website
             'setFormats' => '//*[@id="c100"]/div/div/div[2]/div[1]/div/div[4]/div[1]/div[1]/a/img/@alt',
-            'setProvider' => '//*[@id="c100"]/div/div/div[1]/div[2]/div[11]/span[2]'
+            'setProvider' => '//span[.="Diffuseur : "]/../span[@class="value"]/text()'
         );
     }
 
