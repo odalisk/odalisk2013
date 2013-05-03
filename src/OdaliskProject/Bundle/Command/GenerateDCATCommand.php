@@ -11,6 +11,14 @@ use OdaliskProject\Bundle\Entity\Portal;
 
 use OdaliskProject\Bundle\Entity\Dataset;
 
+use OdaliskProject\Bundle\Scraper\Tools\Normalize\DateNormalizer;
+
+use Symfony\Component\DomCrawler\Crawler;
+
+
+
+
+
 /**
  * A command that will generate a DCAT file using data from Odalisk SQL database
  */
@@ -31,13 +39,22 @@ class GenerateDCATCommand extends BaseCommand
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-       $start = time();
+        $start = time();
+
+
         // Store the container so that we have an easy shortcut
         $container = $this->getContainer();
         // Get the configuration value from config/app.yml : which platforms are enabled?
         $platformServices = $container->getParameter('config.enabled_portals.adhoc');
-        foreach($container->getParameter('config.enabled_portals.dcat') as $it){
-            array_push($platformServices, $it);
+
+        $dcatPlatforms = $container->getParameter('config.enabled_portals.dcat');
+
+        // If we have additionnal platforms to parse (dcat ones)
+        if( !empty($dcatPlatforms) ){
+                foreach($dcatPlatforms as $it){
+                // adding them to enabled platforms list
+                array_push($platformServices, $it);
+            }
         }
         
         // Get the data directory
@@ -80,6 +97,16 @@ class GenerateDCATCommand extends BaseCommand
                 // Cache the platform path
                 $platformPath = $dataPath . $name . '/';
 
+            $document = new \DOMDocument();
+            $document->load("catalogBase.rdf");
+
+            $this->generatePortalInfo($document, $portal);
+
+            $document->save("web/bundles/odalisk/dcat/" . $portal->getName() . ".rdf");
+
+
+    /*
+
 
                 $this->generatePortalInfo($portal);
 
@@ -88,6 +115,8 @@ class GenerateDCATCommand extends BaseCommand
                 foreach ($datasets as $dataset) {
                     $this->generateDatasetInfo($portal, $dataset);
                 }
+
+
         $filename = "web/bundles/odalisk/dcat/" . $portal->getName() . ".rdf";
 
         if (!$handle = fopen($filename, 'a')) {
@@ -97,14 +126,47 @@ class GenerateDCATCommand extends BaseCommand
                     fwrite($handle,"\t</dcat:Catalog>\n");
                 fwrite($handle,"</rdf:RDF>\n");
         fclose($handle);
-
+    */
                 }
         }
         $end = time();
         error_log('[DCATGeneration] Processing ended after ' . ($end - $start) . ' seconds');
+    
     }
     
-    protected function generatePortalInfo(Portal $portal){
+    protected function generatePortalInfo(\DOMDocument $document, Portal $portal){
+    //protected function generatePortalInfo(Portal $portal){
+
+        // Defining language resource url
+        $lang = "http://id.loc.gov/vocabulary/iso639-1/";
+        // Define a XPath object used to make queries on the document
+        $xpath = new \DOMXPath($document);
+
+        $xpath->evaluate('//dcat:Catalog/dct:title')->item(0)->nodeValue = $portal->getName();
+        $xpath->evaluate('//dcat:Catalog/dct:description')->item(0)->nodeValue = "We don't have any for portals";
+
+        $xpath->evaluate('//dcat:Catalog/dct:issued')->item(0)->nodeValue = $portal->getCreatedAt()->format("Y-m-d");
+        $xpath->evaluate('//dcat:Catalog/dct:modified')->item(0)->nodeValue = $portal->getUpdatedAt()->format("Y-m-d");;
+
+        // Generate language url using the platform language
+        $lang = $lang . "en";
+        $xpath->evaluate('//dcat:Catalog/dct:language')->item(0)->setAttribute( "rdf:resource" , $lang );
+
+        $xpath->evaluate('//dcat:Catalog/dct:license/rdfs:label')->item(0)->nodeValue = "";
+
+        $xpath->evaluate('//dcat:Catalog/foaf:homepage')->item(0)->setAttribute( "rdf:resource" , $portal->getUrl() );
+        
+        $xpath->evaluate('//dcat:Catalog/dct:spatial/dct:Location/rdfs:label')
+              ->item(0)->nodeValue = $portal->getCountry();
+
+        $xpath->evaluate('//dcat:Catalog/dct:publisher/foaf:Organization/rdfs:label')
+              ->item(0)->nodeValue = $portal->getEntity();
+        $xpath->evaluate('//dcat:Catalog/dct:publisher/foaf:Organization/foaf:status')
+              ->item(0)->nodeValue = $portal->getStatus();              
+
+
+
+        /*
         $filename = "web/bundles/odalisk/dcat/" . $portal->getName() . ".rdf";
         
         // Assurons nous que le fichier est accessible en écriture
@@ -126,7 +188,6 @@ class GenerateDCATCommand extends BaseCommand
                 $lang = $langArray[$portal->getCountry()];
             else
                 $lang = "en";
-
 
             fwrite($handle,"<?xml version=\"1.0\" encoding=\"utf-8\"?>\n");
             fwrite($handle,"<rdf:RDF xmlns:foaf=\"http://xmlns.com/foaf/0.1/\"\n");
@@ -161,6 +222,7 @@ class GenerateDCATCommand extends BaseCommand
 
         error_log("[DCATGeneration] End of the Generation");
         fclose($handle);
+        */
 
     }
 
@@ -233,3 +295,4 @@ class GenerateDCATCommand extends BaseCommand
 
     }    
 }
+
