@@ -98,16 +98,20 @@ class GenerateDCATCommand extends BaseCommand
                 // Cache the platform path
                 $platformPath = $dataPath . $name . '/';
 
-            $document = new \DOMDocument();
-            $document->load("catalogBase.rdf");
+                if( $portal->getCreatedAt() != NULL ){
+                    $document = new \DOMDocument();
+                    $document->load("src/OdaliskProject/Bundle/Resources/dcat/catalogBaseFile.rdf");
 
-            $this->generatePortalInfo($document, $portal);
+                    $this->generatePortalInfo($document, $portal);
 
-            $document->save("web/bundles/odalisk/dcat/" . $portal->getName() . ".rdf");
+                    $document->save("web/bundles/odalisk/dcat/" . $portal->getName() . ".rdf");
+                }
+                else{
+                    error_log("No data available");
+                }
 
 
     /*
-
 
                 $this->generatePortalInfo($portal);
 
@@ -116,17 +120,6 @@ class GenerateDCATCommand extends BaseCommand
                 foreach ($datasets as $dataset) {
                     $this->generateDatasetInfo($portal, $dataset);
                 }
-
-
-        $filename = "web/bundles/odalisk/dcat/" . $portal->getName() . ".rdf";
-
-        if (!$handle = fopen($filename, 'a')) {
-            error_log("Impossible d'ouvrir le fichier" . $filename);
-              exit;
-        }
-                    fwrite($handle,"\t</dcat:Catalog>\n");
-                fwrite($handle,"</rdf:RDF>\n");
-        fclose($handle);
     */
                 }
         }
@@ -136,22 +129,22 @@ class GenerateDCATCommand extends BaseCommand
     }
     
     protected function generatePortalInfo(\DOMDocument $document, Portal $portal){
-    //protected function generatePortalInfo(Portal $portal){
 
         // Defining language resource url
-        $lang = "http://id.loc.gov/vocabulary/iso639-1/";
+        $langUrl = "http://id.loc.gov/vocabulary/iso639-1/";
         // Define a XPath object used to make queries on the document
         $xpath = new \DOMXPath($document);
 
         $xpath->evaluate('//dcat:Catalog/dct:title')->item(0)->nodeValue = $portal->getName();
-        $xpath->evaluate('//dcat:Catalog/dct:description')->item(0)->nodeValue = "We don't have any for portals";
+        $xpath->evaluate('//dcat:Catalog/dct:description')->item(0)->nodeValue = "";
 
         $xpath->evaluate('//dcat:Catalog/dct:issued')->item(0)->nodeValue = $portal->getCreatedAt()->format("Y-m-d");
         $xpath->evaluate('//dcat:Catalog/dct:modified')->item(0)->nodeValue = $portal->getUpdatedAt()->format("Y-m-d");;
 
-        // Generate language url using the platform language
-        $lang = $lang . "en";
-        $xpath->evaluate('//dcat:Catalog/dct:language')->item(0)->setAttribute( "rdf:resource" , $lang );
+        $lang = $this->getLangAbbreviation($portal->getCountry());
+        $langUrl = $langUrl . $lang;
+
+        $xpath->evaluate('//dcat:Catalog/dct:language')->item(0)->setAttribute( "rdf:resource" , $langUrl );
 
         $xpath->evaluate('//dcat:Catalog/dct:license/rdfs:label')->item(0)->nodeValue = "";
 
@@ -165,80 +158,20 @@ class GenerateDCATCommand extends BaseCommand
         $xpath->evaluate('//dcat:Catalog/dct:publisher/foaf:Organization/foaf:status')
               ->item(0)->nodeValue = $portal->getStatus();              
 
-
-
-        /*
-        $filename = "web/bundles/odalisk/dcat/" . $portal->getName() . ".rdf";
-        
-        // Assurons nous que le fichier est accessible en écriture
-
-        // Dans notre exemple, nous ouvrons le fichier $filename en mode d'ajout
-        // Le pointeur de fichier est placé à la fin du fichier
-        // c'est là que $somecontent sera placé
-        if (!$handle = fopen($filename, 'w')) {
-            error_log("Impossible to open the file " . $filename);
-              exit;
-        }
-
-       // Ecrivons quelque chose dans notre fichier.
-           // Select language based on location
-            $langArray = array( 'France'         => "fr",
-                         );
-
-            if( array_key_exists($portal->getCountry(), $langArray) )
-                $lang = $langArray[$portal->getCountry()];
-            else
-                $lang = "en";
-
-            fwrite($handle,"<?xml version=\"1.0\" encoding=\"utf-8\"?>\n");
-            fwrite($handle,"<rdf:RDF xmlns:foaf=\"http://xmlns.com/foaf/0.1/\"\n");
-            fwrite($handle,"\t\t xmlns:skos=\"http://www.w3.org/2004/02/skos/core#\"\n");
-            fwrite($handle,"\t\t xmlns:dcat=\"http://www.w3.org/ns/dcat#\"\n");
-            fwrite($handle,"\t\t xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\"\n");
-            fwrite($handle,"\t\t xmlns:rdfs=\"http://www.w3.org/2000/01/rdf-schema#\"\n");
-            fwrite($handle,"\t\t xmlns:dct=\"http://purl.org/dc/terms/\"\n");
-            fwrite($handle,"\t\t xmlns:dctypes=\"http://purl.org/dc/dcmitype/\"\n");
-            fwrite($handle,"\t\t xmlns:owl=\"http://www.w3.org/2002/07/owl#\">\n");
-
-                fwrite($handle,"\t<dcat:Catalog rdf:about=\"" . $portal->getUrl() . "\">\n");
-                    fwrite($handle,"\t\t<dct:title xml:lang=\"" . $lang . "\">" .$portal->getName() . "</dct:title>\n");
-                    fwrite($handle,"\t\t<dct:description xml:lang=\"" . $lang . "\"></dct:description>\n");
-                    fwrite($handle,"\t\t<foaf:homepage rdf:resource=\"" . $portal->getUrl() . "\"/>\n");
-                    fwrite($handle,"\t\t<dct:spatial>\n");
-                        fwrite($handle,"\t\t\t<dct:Location>\n");
-                            fwrite($handle,"\t\t\t\t<rdfs:label xml:lang=\"" . $lang . "\">" . $portal->getCountry() . "</rdfs:label>\n");
-                            fwrite($handle,"\t\t\t\t<rdfs:seeAlso rdf:resource=\"\"/>\n");
-                        fwrite($handle,"\t\t\t</dct:Location>\n");
-                    fwrite($handle,"\t\t</dct:spatial>\n");
-                    fwrite($handle,"\t\t<dct:license rdf:resource=\"\"/>\n");
-                    fwrite($handle,"\t\t<dct:publisher>\n");
-                        fwrite($handle,"\t\t\t<foaf:Organization>\n");
-                            fwrite($handle,"\t\t\t\t<dct:title xml:lang=\"" . $lang . "\">" . $portal->getEntity() . "</dct:title>\n");
-                            fwrite($handle,"\t\t\t\t<foaf:homepage rdf:resource=\"" . $portal->getUrl() . "\"/>\n");
-                        fwrite($handle,"\t\t\t</foaf:Organization>\n");
-                    fwrite($handle,"\t\t</dct:publisher>\n");
-
-    
-        
-
-        error_log("[DCATGeneration] End of the Generation");
-        fclose($handle);
-        */
-
     }
 
     protected function generateDatasetInfo(Portal $portal, Dataset $dataset){
-        $filename = "web/bundles/odalisk/dcat/" . $portal->getName() . ".rdf";
-        
-        // Assurons nous que le fichier est accessible en écriture
+   
+        // Defining language resource url
+        $langUrl = "http://id.loc.gov/vocabulary/iso639-1/";
+        // Define a XPath object used to make queries on the document
+        $xpath = new \DOMXPath($document);
 
-        // Dans notre exemple, nous ouvrons le fichier $filename en mode d'ajout
-        // Le pointeur de fichier est placé à la fin du fichier
-        // c'est là que $somecontent sera placé
-        if (!$handle = fopen($filename, 'a')) {
-            error_log("Impossible to open the file " . $filename);
-              exit;
-        }
+
+
+        
+        /*
+       
 
        // Ecrivons quelque chose dans notre fichier.
            // Select language based on location
@@ -293,7 +226,26 @@ class GenerateDCATCommand extends BaseCommand
       fwrite($handle,"\t\t</dcat:dataset>\n");
 
       fclose($handle);
+    */
+    } 
 
-    }    
+    /**
+     * Generate language url using the platform language
+     * We don't know the platform language so we use the location
+     * We use english (en) as a default value
+     */
+    protected function getLangAbbreviation( $portalLocation ){
+
+        $langArray = array( 'France'   => "fr",
+                            'Espana'   => "es",
+                          );
+
+        if( array_key_exists( $portalLocation, $langArray ) )
+            $lang = $langArray[$portalLocation];
+        else
+            $lang = "en";
+
+        return $lang;
+    }   
 }
 
