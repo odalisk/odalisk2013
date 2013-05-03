@@ -21,6 +21,7 @@ use Symfony\Component\DomCrawler\Crawler;
 
 /**
  * A command that will generate a DCAT file using data from Odalisk SQL database
+ * it can generate the dcat files for all platforms
  */
 class GenerateDCATCommand extends BaseCommand
 {
