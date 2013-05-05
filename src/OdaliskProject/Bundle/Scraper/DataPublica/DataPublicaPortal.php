@@ -15,10 +15,6 @@ class DataPublicaPortal extends BasePortal
 {
     protected $estimatedDatasetCount = 0;
 
-    protected $monthText = array("/janv./", "/févr./", "/mars/", "/avr./", "/mai/", "/juin/", "/juil./", "/août/", "/sept./", "/oct./", "/nov./","/déc./");
-
-    protected $monthNumber = array("01","02","03","04","05","06","07","08","09","10","11","12");
-
     public function __construct()
     {
         $this->criteria = array(
@@ -79,23 +75,5 @@ class DataPublicaPortal extends BasePortal
 
 
         return $this->urls;
-    }
-
-    protected function additionalExtraction($crawler, &$data)
-    {
-        // Deal with UTF8
-        foreach ($data as $key => $value) {
-            $data[$key] = utf8_decode($value);
-        }
-
-        // Convert dates to known format
-        foreach (array('setReleasedOn', 'setLastUpdatedOn') as $field) {
-            $data[$field] = $this->translateDate($data[$field]);
-        }
-    }
-
-    public function translateDate($date)
-    {
-        return preg_replace($this->monthText , $this->monthNumber , $date);
     }
 }
