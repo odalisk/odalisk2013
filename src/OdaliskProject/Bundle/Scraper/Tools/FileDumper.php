@@ -4,6 +4,9 @@ namespace OdaliskProject\Bundle\Scraper\Tools;
 
 use Buzz\Message;
 use OdaliskProject\Bundle\Document\DcatDataset;
+use Symfony\Component\DomCrawler\Crawler;
+use OdaliskProject\Bundle\Entity\DatasetCriteria;
+use OdaliskProject\Bundle\Entity\Dataset;
 
 class FileDumper
 {
@@ -17,11 +20,17 @@ class FileDumper
      */
     protected static $em;
 
-
     /**
      * MongoDb manager
      */
     protected static $mongoDb;
+
+
+    /**
+     * General container
+     */
+    protected static $container;
+
 
     protected static $count = 0;
     protected static $totalCount = 0;
@@ -56,7 +65,7 @@ class FileDumper
     }
 
 
-    public static function saveRdfToDisk(Message\Request $request, Message\Response $response)
+    public static function saveRdfToMongo(Message\Request $request, Message\Response $response)
     {
         self::$count++;
         $content = "";
@@ -69,18 +78,47 @@ class FileDumper
             $content = $response->getContent();
         }
 
-        $platform = self::getPlatformName($file['meta']['url']);
-        $filename = self::$base_path . $platform . '/' . $file['meta']['hash'];
+        //Preparation of the temporary file
+        $platformName  = self::getPlatformName($file['meta']['url']);
+        $filename      = self::$base_path . $platformName . '/' . $file['meta']['hash'];
         file_put_contents($filename, json_encode($content));
 
+        //Creation of a new DcatDataset in MongoDb
 
         $dcatDataset = new DcatDataset();
-        $dcatDataset->setPortalName($platform);
+        $dcatDataset->setPortalName($platformName);
+
         $dcatDataset->setFile($filename);
+
+
+        //Then we want to extract some information, so we load the associated platform
+        $platform = self::$container->get($platformName);
+
+        //Creation of future SQL row
+        $dataset = new Dataset();
+        $portal  = $platform->loadPortal();
+        $dataset->setPortal($portal);
+
+        
+        //We launch the analysis of the content
+        $platform->analyseDcatContent($content, $dataset);
+        $criteria = new DatasetCriteria($dataset); 
+        $dataset->setCriteria($criteria);
+        $dcatDataset->setName($dataset->getName());
         $dm = self::$mongoDb;
         $dm->persist($dcatDataset);
         $dm->flush();
+        $insertedDataset = $dm->getRepository('OdaliskProject\Bundle\Document\DcatDataset')->findOneBy(array('name'=>$dataset->getName(),
+                                                                                                    'portalName'=>$platformName));
+        $dataset->setIdMongo($insertedDataset->getId());
+        
 
+        //End of the task 
+        $em = self::$container->get('doctrine')->getEntityManager();
+        $em->persist($criteria);
+        $em->persist($dataset);
+        $em->flush();
+        $dataset = null;
         unlink($filename);
 
         if (0 == self::$count % 100 || self::$count == self::$totalCount) {
@@ -126,7 +164,7 @@ class FileDumper
         $data = file_get_contents($file);
 
         if (false === $data) {
-            error_log('[Get HTML] URL file is missing. Run ./console odalisk:dcat:geturls ' . $portal_name);
+            error_log('[Get Rdf] URL file is missing. Run ./console odalisk:dcat:geturls ' . $portal_name);
 
             return array();
         } else {
@@ -183,5 +221,11 @@ class FileDumper
     public static function setMongoDb($mongo)
     {
         self::$mongoDb = $mongo;
+
+    }
+
+    public static function setContainer($container)
+    {
+        self::$container = $container;
     }
 }

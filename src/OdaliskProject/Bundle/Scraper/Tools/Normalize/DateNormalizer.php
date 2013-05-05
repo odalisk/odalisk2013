@@ -128,7 +128,7 @@ class DateNormalizer
                 // Try to match the date against something we know
                     if (preg_match('/^[0-9]{1,2}\-[0-9]{1,2}\-[0-9]{4}\s([0-9]{2}\:){2}[0-9]{2}$/i', $date, $m)) {
                         // Depending on how many matches we have, we know which format to pick
-                        $data[$field] = \Datetime::createFromFormat("d-m-Y H:m:s", $date)->format("d-m-Y H:m:s");
+                        $data[$field] = \Datetime::createFromFormat("d-m-Y H:m:s", $date);
                         if (false === $data[$field]) {
                             error_log(
                                 '[' . date('d-M-Y H:i:s') . '] [>>> False positive] ' 
@@ -148,7 +148,7 @@ class DateNormalizer
                 } else {
                     // Not something we recognize
                     error_log('[' . date('d-M-Y H:i:s') . '] [Unknown date format] ' .$dateO. ' => ' . $date . "\n", 3, $this->log);
-                    $data[$field] = $date;
+                    $data[$field] = null;
                 }
                 $date = null;
             }

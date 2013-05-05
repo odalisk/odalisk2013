@@ -8,6 +8,8 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Output\OutputInterface;
 
 use OdaliskProject\Bundle\Scraper\Tools\FileDumper;
+use OdaliskProject\Bundle\Entity\DatasetCriteria;
+
 
 /**
  * A command that will download the HTML pages for all the datasets
@@ -46,6 +48,7 @@ class DCATCrawlCommand extends BaseCommand
         //$em->getConnection()->getConfiguration()->setSQLLogger(new \Doctrine\DBAL\Logging\EchoSQLLogger());
 
         FileDumper::setMongoDb($this->getMongoDbManager());
+        FileDumper::setContainer($container);
 
 
         // Initialize some arrrays
@@ -113,7 +116,7 @@ class DCATCrawlCommand extends BaseCommand
                     $url = array_pop($queue);
                     // Add it to the dispatcher it isn't null
                     if (null != $url) {
-                        $dispatcher->queue($url, 'OdaliskProject\Bundle\Scraper\Tools\FileDumper::saveRdfToDisk');
+                        $dispatcher->queue($url, 'OdaliskProject\Bundle\Scraper\Tools\FileDumper::saveRdfToMongo');
 
                     } else {
                         // We reached the end of the queue, remove it from the pool
@@ -123,11 +126,11 @@ class DCATCrawlCommand extends BaseCommand
             }
 
             // Launch the crawl
-            error_log('[Get HTML] Starting to crawl');
+            error_log('[Get RDF] Starting to crawl');
             $dispatcher->dispatch(10);
 
             $end = time();
-            error_log('[Get HTML] Processing ended after ' . ($end - $start) . ' seconds');
+            error_log('[Get RDF] Processing ended after ' . ($end - $start) . ' seconds');
         }
     }
 

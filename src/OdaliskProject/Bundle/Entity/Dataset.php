@@ -91,16 +91,16 @@ class Dataset
     protected $license;
 
     /**
-     * @var string $released_on When did we create this record
+     * @var datetime $released_on When did we create this record
      *
-     * @ORM\Column(name="released_on", type="string", nullable=true, length=255)
+     * @ORM\Column(name="released_on", type="datetime", nullable=true)
      */
     protected $released_on;
 
     /**
-     * @var string $last_updated_on When did we create this record
+     * @var datetime $last_updated_on When did we create this record
      *
-     * @ORM\Column(name="last_updated_on", type="string", nullable=true, length=255)
+     * @ORM\Column(name="last_updated_on", type="datetime", nullable=true)
      */
     protected $last_updated_on;
 
@@ -309,7 +309,7 @@ class Dataset
     /**
      * Set released_on
      *
-     * @param string $releasedOn
+     * @param datetime $releasedOn
      */
     public function setReleasedOn($releasedOn)
     {
@@ -319,7 +319,7 @@ class Dataset
     /**
      * Get released_on
      *
-     * @return string
+     * @return datetime
      */
     public function getReleasedOn()
     {
@@ -329,7 +329,7 @@ class Dataset
     /**
      * Set last_updated_on
      *
-     * @param string $lastUpdatedOn
+     * @param datetime $lastUpdatedOn
      */
     public function setLastUpdatedOn($lastUpdatedOn)
     {
@@ -339,7 +339,7 @@ class Dataset
     /**
      * Get last_updated_on
      *
-     * @return string
+     * @return datetime
      */
     public function getLastUpdatedOn()
     {

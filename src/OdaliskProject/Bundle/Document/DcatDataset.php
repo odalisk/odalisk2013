@@ -13,6 +13,9 @@ class DcatDataset
     /** @MongoDB\Field */
     private $portalName;
 
+    /** @MongoDB\Field */
+    private $name;
+
     /** @MongoDB\File */
     private $file;
 
@@ -43,6 +46,16 @@ class DcatDataset
     public function getPortalName()
     {
         return $this->portalName;
+    }
+
+    public function setName($name)
+    {
+        $this->name = $name;
+    }
+
+    public function getName()
+    {
+        return $this->name;
     }
 
     public function getFile()

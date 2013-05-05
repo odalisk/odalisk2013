@@ -46,10 +46,18 @@ class GenerateDCATCommand extends BaseCommand
         // Store the container so that we have an easy shortcut
         $container = $this->getContainer();
         // Get the configuration value from config/app.yml : which platforms are enabled?
-        $platformServices = $container->getParameter('config.enabled_portals.adhoc');
+        $platformServices = array();
+
+        $adhocPlatforms= $container->getParameter('config.enabled_portals.adhoc');
 
         $dcatPlatforms = $container->getParameter('config.enabled_portals.dcat');
-
+        // If we have additionnal platforms to parse (dcat ones)
+        if( !empty($adhocPlatforms) ){
+                foreach($adhocPlatforms as $it){
+                // adding them to enabled platforms list
+                array_push($platformServices, $it);
+            }
+        }
         // If we have additionnal platforms to parse (dcat ones)
         if( !empty($dcatPlatforms) ){
                 foreach($dcatPlatforms as $it){

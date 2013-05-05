@@ -13,11 +13,11 @@
     {% if display_date %}
     <tr>
         <td class="key">Released on <i class="icon-info-sign icon-info" rel="popover" title="Resealed on" data-content="First release of the dataset (provided by the portal)."></i></td>
-        <td>{{ dataset.releasedOn() }}</td>
+        <td>{{ dataset.releasedOn()|date("d/m/Y") }}</td>
     </tr>
     <tr>
         <td class="key">Last update on <i class="icon-info-sign icon-info" rel="popover" title="Last update on" data-content="Last update of the dataset (provided by the portal)."></i></td>
-        <td>{{ dataset.lastUpdatedOn() }}</td>
+        <td>{{ dataset.lastUpdatedOn()|date("d/m/Y") }}</td>
     </tr>
     {% endif %}
     <tr>

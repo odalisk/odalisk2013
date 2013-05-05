@@ -102,7 +102,6 @@ class DCATExtractCommand extends BaseCommand
                     $dataset->setIdMongo($datasetToAnalyse->getId());
                     $fileContent = $datasetToAnalyse->getFile()->getBytes();
                     $data = json_decode($fileContent,true);
-                    //echo $data;
                     
                     $platform->analyseDcatContent($data, $dataset);
                     
