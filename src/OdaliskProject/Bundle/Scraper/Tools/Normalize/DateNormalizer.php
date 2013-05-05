@@ -11,72 +11,40 @@ class DateNormalizer
      */
     protected $translateMonths = array(
         '/(.+)?(janvier|jan|january)(-|\s.+)/i' =>  array(
-            '01',
+            '01M',
         ),
         '/(.+)?(février|fév|february|feb)(-|\s.+)/i' =>  array(
-            '02',
+            '02M',
         ),
         '/(.+)?(mars|mar|march)(-|\s.+)/i' =>  array(
-            '03',
+            '03M',
         ),
         '/(.+)?(avril|avr|april|apr)(-|\s.+)/i' =>  array(
-            '04',
+            '04M',
         ),
         '/(.+)?(mai|may)(-|\s.+)/i' =>  array(
-            '05',
+            '05M',
         ),
         '/(.+)?(juin|june|jun)(-|\s.+)/i' =>  array(
-            '06',
+            '06M',
         ),
         '/(.+)?(juillet|july|jul)(-|\s.+)/i' =>  array(
-            '07',
+            '07M',
         ),
         '/(.+)?(aout|août|aou|august|aug)(-|\s.+)/i' =>  array(
-            '08',
+            '08M',
         ),
         '/(.+)?(septembre|sept|sep|september)(-|\s.+)/i' =>  array(
-            '09',
+            '09M',
         ),
         '/(.+)?(octobre|oct|october)(-|\s.+)/i' =>  array(
-            '10',
+            '10M',
         ),
         '/(.+)?(novembre|nov|november)(-|\s.+)/i' =>  array(
-            '11',
+            '11M',
         ),
         '/(.+)?(décembre|dec|december)(-|\s.+)/i' =>  array(
-            '12',
-        ),
-    );
-
-    /**
-     * Match some regex to known date formats. Order is IMPORTANT!
-     *
-     * @var string
-     */
-    protected $correctDates = array(
-        '/^[0-9]{4}(.[0-9]{1,2}(.[0-9]{1,2}( [0-9]{2}(:[0-9]{2}(:[0-9]{2})?)?)?)?)?$/' =>  array(
-            '!Y',
-            '!Y*m',
-            '!Y*m*d',
-            '!Y*m*d H',
-            '!Y*m*d H:i',
-            '!Y*m*d H:i:s',
-        ),
-        '/^(([0-9]{1,2}.)?[0-9]{1,2}.)?[0-9]{4}( [0-9]{2}(:[0-9]{2}(:[0-9]{2})?)?)?$/' => array(
-            '!Y',
-            '!m*Y',
-            '!d*m*Y',
-            '!d*m*Y H',
-            '!d*m*Y H:i',
-            '!d*m*Y H:i:s',
-        ),
-        '/^(([0-9]{1,2}.)?[0-9]{1,2}.)?[0-9]{2}( [0-9]{2}(:[0-9]{2}(:[0-9]{2})?)?)?$/' => array(
-            '!y',
-            '!m*y',
-            '!d*m*y',
-            '!d*m*y H',
-            '!d*m*y H:i',
-            '!d*m*y H:i:s',
+            '12M',
         ),
     );
 
@@ -105,26 +73,62 @@ class DateNormalizer
         // We transform dates strings in datetime.
         foreach ($this->dateFields as $field) {
             if (array_key_exists($field, $data)) {
-                $date = $data[$field];
+                // Define default values
+                $time = "00:00:00";
+                $d = "01";
+                $m = "01";
+                $y = "2013";
 
+                $date = $data[$field];
                 $dateO = $date;
 
-                foreach($this->translateMonths as $tM => $month){
+            // begining normalization
+                // 01: extract time if provided else use default value => '00:00:00'
+                    if(preg_match('/(.+)(([0-9]{2}\:){2}[0-9]{2})/', $date, $matches))
+                    {
+                        $date = $matches[1];
+                        $time = $matches[2];
+                    }
+                // 0 replace every separator with a space
+                    $date = preg_replace('/[\/\-\.\,]/', ' ', $date); 
+                    $date = strtolower($date);  
 
-                    $date = preg_replace($tM, '${1}'. $month[count($month)-1] . '$3', $date);
-                }
-                $date = preg_replace('#[A-Za-zÁÀÂÄÉÈÊËÍÌÎÏÓÒÔÖÚÙÛÜáàâäéèêëíìîïóòôöúùûüÇç&\(\)]+#', '', $date);               
-                $date = trim($date);
+                // replace month in literal form with digits + M (ex: Jan => 01M)
+                    foreach($this->translateMonths as $tM => $month){
+                      $date = preg_replace($tM, '${1}'. $month[count($month)-1] . '$3', $date);
+                    }
 
-               // error_log($date);
+                // tag year in date
+                    $date = preg_replace('/(\d{4})/', '$1Y', $date);               
 
+                // 0 delete all which is not a date (apart from UPERCASE char marking numbers)
+                // delete double spaces
+                    $date = preg_replace('#[a-záàâäéèêëíìîïóòôöúùûüç&\(\)\#]+#', '', $date);               
+                    $date = trim($date);
+                    $date = preg_replace('/\s\s/s', ' ', $date);     
+
+                    if(preg_match('/^([0-9]{2})\s/', $date, $matches)){
+                      $d = $matches[1];
+                    }
+                    if(preg_match('/([0-9]{2})M/', $date, $matches)){
+                      $m = $matches[1];
+                    }
+                    else { 
+                      if(preg_match('/^[0-9]{2}\s([0-9]{2})/', $date, $matches)){
+                        $m = $matches[1];
+                      }
+                    }
+                    if(preg_match('/([0-9]{4})Y/', $date, $matches)){
+                      $y = $matches[1];
+                    }
+
+                    $date = $d . '-' . $m . '-' . $y;
+                    $date = $date . ' ' . $time;
 
                 // Try to match the date against something we know
-                foreach ($this->correctDates as $regex => $formats) {
-                    // Check if we have a match
-                    if (preg_match($regex, $date, $m)) {
+                    if (preg_match('/^[0-9]{1,2}\-[0-9]{1,2}\-[0-9]{4}\s([0-9]{2}\:){2}[0-9]{2}$/i', $date, $m)) {
                         // Depending on how many matches we have, we know which format to pick
-                        $data[$field] = \Datetime::createFromFormat($formats[count($m)-1], $date)->format("d-m-Y H:i");
+                        $data[$field] = \Datetime::createFromFormat("d-m-Y H:m:s", $date)->format("d-m-Y H:m:s");
                         if (false === $data[$field]) {
                             error_log(
                                 '[' . date('d-M-Y H:i:s') . '] [>>> False positive] ' 
@@ -134,9 +138,9 @@ class DateNormalizer
                             $data[$field] = null;
                         }
                         // Check out the next field directly
-                        continue 2;
+                        continue 1;
                     }
-                }
+
                 // This is executed only if we have no match
                 // Check if it is a known empty-ish value
                 if (in_array($date, $this->emptyDates)) {
