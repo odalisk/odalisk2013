@@ -75,4 +75,14 @@
         </td>
     </tr>
     
+    {% if dataset.idMongo is not defined or dataset.idMongo is empty %}
+    {% else %}
+    <tr>
+        <td class="key">Fichier Rdf</td>
+        <td>
+            <a href="{{ path('dataset_rdf', { 'idMongo': dataset.idMongo }) }}">Rdf file</a>
+        </td>
+    </tr>
+    {% endif %}
+
 </table>
