@@ -13,11 +13,23 @@
     {% if display_date %}
     <tr>
         <td class="key">Released on <i class="icon-info-sign icon-info" rel="popover" title="Resealed on" data-content="First release of the dataset (provided by the portal)."></i></td>
-        <td>{{ dataset.releasedOn()|date("d/m/Y") }}</td>
+        <td>
+            {% if dataset.releasedOn is not defined or dataset.releasedOn is empty  %}
+                No release date provided
+            {% else %}
+                {{ dataset.releasedOn()|date("d/m/Y") }}
+            {% endif %}
+        </td>
     </tr>
     <tr>
         <td class="key">Last update on <i class="icon-info-sign icon-info" rel="popover" title="Last update on" data-content="Last update of the dataset (provided by the portal)."></i></td>
-        <td>{{ dataset.lastUpdatedOn()|date("d/m/Y") }}</td>
+        <td>
+            {% if dataset.lastUpdatedOn is not defined or dataset.lastUpdatedOn is empty  %}
+                No last update date provided
+            {% else %}
+                {{ dataset.lastUpdatedOn()|date("d/m/Y") }}
+            {% endif %}
+        </td>
     </tr>
     {% endif %}
     <tr>

@@ -18,7 +18,7 @@ class DcatPortal extends BasePortal
             'setReleasedOn' => '//dataset//relation/description[label="date_released"]/value/text()',
             'setOwner' => '//dataset/creator/description/name/text()',
             'setMaintainer' => '//dataset//contributor/description/name',
-            'setLastUpdatedOn' => '//dataset//relation/description[label="update_date"]/value/text()',
+            'setLastUpdatedOn' => '//dataset//relation/description[label="date_updated"]/value/text()',
             'setProvider' => '//dataset//relation/description[label="creator"]/value/text()',
             'setRawLicense' => '//rights/@*',
             'setCategories' => '//dataset//relation/description[label="categories"]/value/text()',

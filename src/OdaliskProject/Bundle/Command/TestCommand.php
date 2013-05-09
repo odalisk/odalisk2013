@@ -99,6 +99,8 @@ class TestCommand extends BaseCommand
                               'blabla (1980)',
                               '1562',
                               '03.12.2452 there is something in the MIDDLE éé ? 03:08:09',
+                              '2010-11-15',
+                              '2010-03-31T00:00:00',
 
                      );
  
@@ -140,6 +142,28 @@ class TestCommand extends BaseCommand
                     if(preg_match('/^([0-9]{2})\s/', $date, $matches)){
                       $d = $matches[1];
                     }
+                    else{
+                      if(preg_match('/^([0-9]{4})Y/', $date, $matches)){
+                        $y = $matches[1];
+                      }
+                      if(preg_match('/([0-9]{2})M/', $date, $matches)){
+                        $m = $matches[1];
+                      }
+                      else { 
+                        if(preg_match('/^[0-9]{4}Y\s([0-9]{2})\s/', $date, $matches)){
+                          $m = $matches[1];
+                        }
+                      }
+                      if(preg_match('/[0-9]{4}Y\s[0-9]{2}\s([0-9]{2})/', $date, $matches)){
+                        $d = $matches[1];
+                      }
+                      else{
+                        if(preg_match('/[0-9]{4}Y\s[0-9]{2}M\s([0-9]{2})/', $date, $matches)){
+                          $d = $matches[1];
+                        }
+                      }
+                    }
+
                     if(preg_match('/([0-9]{2})M/', $date, $matches)){
                       $m = $matches[1];
                     }

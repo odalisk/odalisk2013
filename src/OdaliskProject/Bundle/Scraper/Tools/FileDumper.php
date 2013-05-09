@@ -92,33 +92,36 @@ class FileDumper
 
 
         //Then we want to extract some information, so we load the associated platform
-        $platform = self::$container->get($platformName);
+        //$platform = self::$container->get($platformName);
 
         //Creation of future SQL row
-        $dataset = new Dataset();
-        $portal  = $platform->loadPortal();
-        $dataset->setPortal($portal);
+        //$dataset = new Dataset();
+        //$portal  = $platform->loadPortal();
+        //$dataset->setPortal($portal);
 
         
         //We launch the analysis of the content
-        $platform->analyseDcatContent($content, $dataset);
-        $criteria = new DatasetCriteria($dataset); 
-        $dataset->setCriteria($criteria);
-        $dcatDataset->setName($dataset->getName());
+        //$platform->analyseDcatContent($content, $dataset);
+        //$criteria = new DatasetCriteria($dataset); 
+        //$dataset->setCriteria($criteria);
+        //$dcatDataset->setName($dataset->getName());
         $dm = self::$mongoDb;
         $dm->persist($dcatDataset);
         $dm->flush();
-        $insertedDataset = $dm->getRepository('OdaliskProject\Bundle\Document\DcatDataset')->findOneBy(array('name'=>$dataset->getName(),
-                                                                                                    'portalName'=>$platformName));
-        $dataset->setIdMongo($insertedDataset->getId());
+        //$insertedDataset = $dm->getRepository('OdaliskProject\Bundle\Document\DcatDataset')->findOneBy(array('name'=>$dataset->getName(),
+        //                                                                                            'portalName'=>$platformName));
+        //$dataset->setIdMongo($insertedDataset->getId());
         
 
         //End of the task 
-        $em = self::$container->get('doctrine')->getEntityManager();
-        $em->persist($criteria);
-        $em->persist($dataset);
-        $em->flush();
-        $dataset = null;
+        //$em = self::$container->get('doctrine')->getEntityManager();
+        //$em->persist($criteria);
+        //$em->persist($dataset);
+        //$em->flush();
+        //$insertedDataset = null;
+        //$dataset = null;
+        //$criteria = null;
+        $dcatDataset = null;
         unlink($filename);
 
         if (0 == self::$count % 100 || self::$count == self::$totalCount) {

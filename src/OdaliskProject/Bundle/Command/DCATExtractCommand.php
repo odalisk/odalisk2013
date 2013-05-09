@@ -86,7 +86,7 @@ class DCATExtractCommand extends BaseCommand
 
                 error_log($name);
                 $datasetsOfPortal = $docManager->createQueryBuilder('OdaliskProject\Bundle\Document\DcatDataset')->field('portalName')->equals($name)->getQuery();
-
+                $total = count($datasetsOfPortal);
                 if (!$datasetsOfPortal) {
                     error_log('[Analysis] nothing to be done. Perhaps ./console odalisk:dcat:crawl ' . $name);
                     continue;
