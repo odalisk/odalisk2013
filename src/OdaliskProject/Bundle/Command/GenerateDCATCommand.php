@@ -8,11 +8,8 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Output\OutputInterface;
 
 use OdaliskProject\Bundle\Entity\Portal;
-
 use OdaliskProject\Bundle\Entity\Dataset;
-
 use OdaliskProject\Bundle\Scraper\Tools\Normalize\DateNormalizer;
-
 use Symfony\Component\DomCrawler\Crawler;
 
 
@@ -25,6 +22,11 @@ use Symfony\Component\DomCrawler\Crawler;
  */
 class GenerateDCATCommand extends BaseCommand
 {
+    /** 
+     * @var string
+    */
+    protected $resourceUrl = "src/OdaliskProject/Bundle/Resources/dcat/";
+
     protected function configure()
     {
         $this
@@ -41,8 +43,6 @@ class GenerateDCATCommand extends BaseCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $start = time();
-
-
         // Store the container so that we have an easy shortcut
         $container = $this->getContainer();
         // Get the configuration value from config/app.yml : which platforms are enabled?
@@ -106,38 +106,59 @@ class GenerateDCATCommand extends BaseCommand
                 // Cache the platform path
                 $platformPath = $dataPath . $name . '/';
 
-                if( $portal->getCreatedAt() != NULL ){
-                    $document = new \DOMDocument();
-                    $document->load("src/OdaliskProject/Bundle/Resources/dcat/catalogBaseFile.rdf");
+                $folderUrl = $this->resourceUrl . $portal->getName() . "/";
 
-                    $this->generatePortalInfo($document, $portal);
+                $document = new \DOMDocument('1.0', 'utf-8');
+                $document->preserveWhiteSpace = false;
+                $document->formatOutput = TRUE;
+                $document->load($this->resourceUrl . "catalogBaseFile.rdf");
 
-                    $document->save("web/bundles/odalisk/dcat/" . $portal->getName() . ".rdf");
-                }
-                else{
-                    error_log("No data available");
-                }
-
-
-    /*
-
-                $this->generatePortalInfo($portal);
-
+                error_log('[DCATGeneration] Generating catalog info');
+                $this->generatePortalInfo($document, $portal);
+                error_log('[DCATGeneration] Done');
+                
+                // get the list of every dataset and foreach of them, generate the dcat dataset part
                 $datasets = $portal->getDatasets();
-    
-                foreach ($datasets as $dataset) {
-                    $this->generateDatasetInfo($portal, $dataset);
+                $nbDat = count($datasets);
+                $nbDone = 0;
+
+                if( $nbDat > 0 ){
+                    error_log('[DCATGeneration] Generating datasets info (' . $nbDat . ')');
+                    foreach ($datasets as $dataset) {
+                        if( $nbDone % 100 == 0 ){
+                            error_log('dataset dcat generated : ' . $nbDone . '/' . $nbDat);
+                        }
+                        $this->generateDatasetInfo($document, $portal, $dataset);
+                        $nbDone++;
+                    }
+                    error_log('[DCATGeneration] Done');
                 }
-    */
+
+                // create the folder if it doesn't exists
+                if( !is_dir($folderUrl) ){
+                    mkdir($folderUrl);    
                 }
+
+                // save the result
+                file_put_contents($folderUrl . $portal->getName() . ".rdf", html_entity_decode($document->saveXML()));
+
+                // reformat the file to have a well indented output
+                /*
+                $document = new \DOMDocument('1.0', 'utf-8');
+                $document->preserveWhiteSpace = false;
+                $document->load($folderUrl . $portal->getName() . ".rdf");
+                $document->formatOutput = true; 
+                $document->normalizeDocument();
+                file_put_contents($folderUrl . $portal->getName() . ".rdf", html_entity_decode($document->saveXML()));
+
+                //$document->save($folderUrl . $portal->getName() . ".rdf");*/
+            }
         }
         $end = time();
         error_log('[DCATGeneration] Processing ended after ' . ($end - $start) . ' seconds');
-    
     }
     
     protected function generatePortalInfo(\DOMDocument $document, Portal $portal){
-
         // Defining language resource url
         $langUrl = "http://id.loc.gov/vocabulary/iso639-1/";
         // Define a XPath object used to make queries on the document
@@ -146,8 +167,14 @@ class GenerateDCATCommand extends BaseCommand
         $xpath->evaluate('//dcat:Catalog/dct:title')->item(0)->nodeValue = $portal->getName();
         $xpath->evaluate('//dcat:Catalog/dct:description')->item(0)->nodeValue = "";
 
-        $xpath->evaluate('//dcat:Catalog/dct:issued')->item(0)->nodeValue = $portal->getCreatedAt()->format("Y-m-d");
-        $xpath->evaluate('//dcat:Catalog/dct:modified')->item(0)->nodeValue = $portal->getUpdatedAt()->format("Y-m-d");;
+        if( $portal->getCreatedAt() != NULL ){
+            $xpath->evaluate('//dcat:Catalog/dct:issued')->item(0)->nodeValue = 
+               $portal->getCreatedAt()->format("Y-m-d");
+        }
+        if( $portal->getUpdatedAt() != NULL ){
+            $xpath->evaluate('//dcat:Catalog/dct:modified')->item(0)->nodeValue = 
+                $portal->getUpdatedAt()->format("Y-m-d");
+        }
 
         $lang = $this->getLangAbbreviation($portal->getCountry());
         $langUrl = $langUrl . $lang;
@@ -165,76 +192,73 @@ class GenerateDCATCommand extends BaseCommand
               ->item(0)->nodeValue = $portal->getEntity();
         $xpath->evaluate('//dcat:Catalog/dct:publisher/foaf:Organization/foaf:status')
               ->item(0)->nodeValue = $portal->getStatus();              
-
     }
 
-    protected function generateDatasetInfo(Portal $portal, Dataset $dataset){
-   
+    protected function generateDatasetInfo(\DOMDocument $catalog, Portal $portal, Dataset $dataset){
         // Defining language resource url
         $langUrl = "http://id.loc.gov/vocabulary/iso639-1/";
+        // load the default dataset part
+        $document = new \DOMDocument('1.0', 'utf-8');
+        $document->preserveWhiteSpace = false;
+        $document->formatOutput = true;
+        $document->load($this->resourceUrl . "datasetBaseFile.rdf");
+        
         // Define a XPath object used to make queries on the document
         $xpath = new \DOMXPath($document);
+        $xpathCatalog = new \DOMXPath($catalog);
+
+        // html entities prevent undefined reference warning
+        $xpath->evaluate('//dcat:Dataset/dct:title')->item(0)->nodeValue = htmlentities($dataset->getName());
+        $xpath->evaluate('//dcat:Dataset/dct:description')->item(0)->nodeValue = htmlentities($dataset->getSummary());
+
+        if( $dataset->getReleasedOn() != NULL ){
+            $xpath->evaluate('//dcat:Dataset/dct:issued')->item(0)->nodeValue = 
+                $dataset->getReleasedOn()->format("Y-m-d");
+        }
+        if( $dataset->getLastUpdatedOn() != NULL ){
+            $xpath->evaluate('//dcat:Dataset/dct:modified')->item(0)->nodeValue = 
+                $dataset->getLastUpdatedOn()->format("Y-m-d");
+        }
+
+        $lang = $this->getLangAbbreviation($portal->getCountry());
+        $langUrl = $langUrl . $lang;
+        $xpath->evaluate('//dcat:Dataset/dct:language')->item(0)->setAttribute( "rdf:resource" , $langUrl );
+
+        $xpath->evaluate('//dcat:Dataset/dct:spatial/dct:Location/rdfs:label')->item(0)->nodeValue = 
+            $portal->getCountry();
+
+        $xpath->evaluate('//dcat:Dataset/dcat:landingPage')->item(0)->nodeValue = 
+            $dataset->getUrl();
+
+        $xpath->evaluate('//dcat:Dataset/dcat:keyword')->item(0)->nodeValue = 
+            htmlentities($dataset->getRawCategories());
 
 
 
-        
-        /*
-       
+        $xpath->evaluate('//dcat:Dataset/dct:license/rdfs:label')->item(0)->nodeValue = 
+            $dataset->getRawLicense();
+    
+        $xpath->evaluate('//dcat:Dataset/dct:publisher/foaf:Organization/rdfs:label')
+              ->item(0)->nodeValue = $dataset->getProvider();
 
-       // Ecrivons quelque chose dans notre fichier.
-           // Select language based on location
-            $langArray = array(  'European Union' => "en", 
-                            'France'         => "fr",
-                         );
+        $formats = $dataset->getFormats();
 
-            if( array_key_exists($portal->getCountry(), $langArray) )
-                $lang = $langArray[$portal->getCountry()];
-            else
-                $lang = "en";
+        foreach($formats as $format){
+            $formatNode = $document->createElement('dct:IMT');
 
-            fwrite($handle,"\t\t<dcat:dataset>\n");
-            fwrite($handle,"\t\t\t<dcat:Dataset rdf:about=\"" . $dataset->getUrl() . "\">\n"); 
-            fwrite($handle,"\t\t\t\t<dct:issued rdf:datatype=\"http://www.w3.org/2001/XMLSchema#date\">" . $dataset->getReleasedOn() . "</dct:issued>\n");
-            fwrite($handle,"\t\t\t\t<dct:modified rdf:datatype=\"http://www.w3.org/2001/XMLSchema#date\">" . $dataset->getLastUpdatedOn() . "</dct:modified>\n");
-            fwrite($handle,"\t\t\t\t<dct:creator>" . $dataset->getProvider() . "</dct:creator>\n");
-            fwrite($handle,"\t\t\t\t<dct:description xml:lang=\"" . $lang . "\">" . $dataset->getSummary() . "</dct:description>\n");
-            fwrite($handle,"\t\t\t\t<dct:license rdf:resource=\"\"/>\n");
+            $formatNode->appendChild( $document->createElement('rdf:value', $format->getFormat() ) );
+            $formatNode->appendChild( $document->createElement('rdf:label', $format->getFormat() ) );
+            $xpath->evaluate('//dct:format')->item(0)->appendChild( $formatNode );
 
-            fwrite($handle,"\t\t\t\t<dcat:keyword xml:lang=\"" . $lang . "\"></dcat:keyword>\n");
-            fwrite($handle,"\t\t\t\t<dcat:distribution>\n");
-               fwrite($handle,"\t\t\t\t\t<dcat:Download>\n");
-                  fwrite($handle,"\t\t\t\t\t\t<dcat:accessURL>" . $dataset->getUrl() . "</dcat:accessURL>\n");
+        }
 
+        $document->normalizeDocument();
 
-
-                  fwrite($handle,"\t\t\t\t\t\t<dct:format>\n");
-
-                  $formats = $dataset->getFormats();
-                  foreach($formats as $format){
-                    fwrite($handle,"\t\t\t\t\t\t\t<dct:IMT>\n");
-                       // fwrite($handle,"\t\t\t\t\t\t\t\t<rdf:value></rdf:value>\n");
-                        fwrite($handle,"\t\t\t\t\t\t\t\t<rdfs:label>" . $format->getFormat() . "</rdfs:label>\n");
-                    fwrite($handle,"\t\t\t\t\t\t\t</dct:IMT>\n");        
-
-                  }
-
-
-                  fwrite($handle,"\t\t\t\t\t\t</dct:format>\n");
-
-                  fwrite($handle,"\t\t\t\t\t\t<dct:modified rdf:datatype=\"http://www.w3.org/2001/XMLSchema#date\">" . $dataset->getLastUpdatedOn() . "</dct:modified>\n");
-               fwrite($handle,"\t\t\t\t\t</dcat:Download>\n");
-            fwrite($handle,"\t\t\t\t</dcat:distribution>\n");
-            fwrite($handle,"\t\t\t\t<dct:publisher>\n");
-               fwrite($handle,"\t\t\t\t\t<foaf:Organization>\n");
-                  fwrite($handle,"\t\t\t\t\t\t<dct:title xml:lang=\"" . $lang . "\">" . $dataset->getOwner() . "</dct:title>\n");
-                  fwrite($handle,"\t\t\t\t\t\t<foaf:homepage rdf:resource=\"" . $portal->getUrl() . "\"/>\n");
-               fwrite($handle,"\t\t\t\t\t</foaf:Organization>\n");
-            fwrite($handle,"\t\t\t\t</dct:publisher>\n");
-         fwrite($handle,"\t\t\t</dcat:Dataset>\n");
-      fwrite($handle,"\t\t</dcat:dataset>\n");
-
-      fclose($handle);
-    */
+        // Import the node, and all its children, to the document
+        $node = $catalog->importNode($xpath->evaluate('//dcat:Dataset' )->item(0), true);
+        // And then append it to the "dataset container" node
+        $xpathCatalog->evaluate('//dcat:dataset')->item(0)->appendChild($node);
+        $catalog->normalizeDocument();
     } 
 
     /**
