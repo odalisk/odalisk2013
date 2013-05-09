@@ -17,7 +17,7 @@ abstract class BaseInCiteSolutionPortal extends BasePortal
     {
         $this->criteria = array(
             'setName' => '//*[@id="c100"]/div/div/div[1]/h1/text()',
-            'setCategories' => '//span[.="Thématique(s) : "]/../span[@class="value"]/text()', 
+            'setCategories' => '//p[@class="value categories"]/text()', 
             'setRawLicense' => '//*[@id="c100"]/div/div/div[2]/div[1]/div/div/span[2]',
             //'Update Frequency' => '//*[@id="c100"]/div/div/div[1]/div[2]/div[8]/span[2]',
             'setReleasedOn' => '//*[@id="c100"]/div/div/div[1]/div[1]/span',
