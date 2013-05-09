@@ -1,38 +1,54 @@
-<dcat:Dataset>
+<?xml version="1.0" encoding="utf-8"?>
+<rdf:RDF xmlns:foaf="http://xmlns.com/foaf/0.1/"
+         xmlns:skos="http://www.w3.org/2004/02/skos/core#"
+         xmlns:dcat="http://www.w3.org/ns/dcat#"
+         xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+         xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+         xmlns:dct="http://purl.org/dc/terms/"
+         xmlns:dctypes="http://purl.org/dc/dcmitype/"
+         xmlns:owl="http://www.w3.org/2002/07/owl#">
+	<dcat:Dataset>
 
-	<dct:title></dct:title>
-	<dct:description></dct:description>
+		<dct:title></dct:title>
+		<dct:description></dct:description>
 
-	<dct:issued rdf:datatype="http://www.w3.org/2001/XMLSchema#date"></dct:issued>
-	<dct:modified rdf:datatype="http://www.w3.org/2001/XMLSchema#date"></dct:modified>
+		<dct:issued rdf:datatype="http://www.w3.org/2001/XMLSchema#date"></dct:issued>
+		<dct:modified rdf:datatype="http://www.w3.org/2001/XMLSchema#date"></dct:modified>
 
-	<dct:identifier></dct:identifier>
-	
-	<dcat:keyword></dcat:keyword>
-	
-	<dct:language rdf:resource="http://id.loc.gov/vocabulary/iso639-1/XX"/>
-
-	<dct:temporal>
+		<dct:identifier></dct:identifier>
 		
-	</dct:temporal>
+		<dcat:keyword></dcat:keyword>
+		
+		<dct:language rdf:resource="http://id.loc.gov/vocabulary/iso639-1/XX"/>
 
-	<dct:spatial>
-		<dct:Location>								
-			<rdfs:label></rdfs:label>
-		</dct:Location>
-	</dct:spatial>
-	
-	<dct:accrualPeriodicity>
-		<dct:Frequency></dct:Frequency>
-	</dct:accrualPeriodicity>
+		<dct:temporal>
+			
+		</dct:temporal>
 
-	<dcat:landingPage></dcat:landingPage>
+		<dct:spatial>
+			<dct:Location>								
+				<rdfs:label></rdfs:label>
+			</dct:Location>
+		</dct:spatial>
+		
+		<dct:accrualPeriodicity>
+			<dct:Frequency></dct:Frequency>
+		</dct:accrualPeriodicity>
 
-	<dct:publisher>
-		<foaf:Organization>
+		<dcat:landingPage></dcat:landingPage>
+
+		<dct:publisher>
+			<foaf:Organization>
+				<rdfs:label></rdfs:label> 
+				<foaf:status></foaf:status>
+			</foaf:Organization>
+		</dct:publisher>
+
+		<dct:format></dct:format>
+
+		<dct:license rdf:resource="">									 
 			<rdfs:label></rdfs:label> 
-			<foaf:status></foaf:status>
-		</foaf:Organization>
-	</dct:publisher>
+		</dct:license>
 
-</dcat:Dataset>
+	</dcat:Dataset>
+</rdf:RDF>
