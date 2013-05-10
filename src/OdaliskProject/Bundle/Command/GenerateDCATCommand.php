@@ -106,52 +106,18 @@ class GenerateDCATCommand extends BaseCommand
                 // Cache the platform path
                 $platformPath = $dataPath . $name . '/';
 
-                $folderUrl = $this->resourceUrl . $portal->getName() . "/";
+                $this->generateCatalog( $portal );
 
-                $document = new \DOMDocument('1.0', 'utf-8');
-                $document->preserveWhiteSpace = false;
-                $document->formatOutput = TRUE;
-                $document->load($this->resourceUrl . "catalogBaseFile.rdf");
+                $this->generateDatasetFiles( $portal );
 
-                error_log('[DCATGeneration] Generating catalog info');
-                $this->generatePortalInfo($document, $portal);
-                error_log('[DCATGeneration] Done');
-                
-                // get the list of every dataset and foreach of them, generate the dcat dataset part
-                $datasets = $portal->getDatasets();
-                $nbDat = count($datasets);
-                $nbDone = 0;
+                $toZipUrl = $portal->getName();
+                //$toZipUrl = preg_replace('/ /', '\ ', $toZipUrl);
+                //$toZipUrl = preg_replace('/\'/', '\\\'', $toZipUrl);
 
-                if( $nbDat > 0 ){
-                    error_log('[DCATGeneration] Generating datasets info (' . $nbDat . ')');
-                    foreach ($datasets as $dataset) {
-                        if( $nbDone % 100 == 0 ){
-                            error_log('dataset dcat generated : ' . $nbDone . '/' . $nbDat);
-                        }
-                        $this->generateDatasetInfo($document, $portal, $dataset);
-                        $nbDone++;
-                    }
-                    error_log('[DCATGeneration] Done');
-                }
-
-                // create the folder if it doesn't exists
-                if( !is_dir($folderUrl) ){
-                    mkdir($folderUrl);    
-                }
-
-                // save the result
-                file_put_contents($folderUrl . $portal->getName() . ".rdf", html_entity_decode($document->saveXML()));
-
-                // reformat the file to have a well indented output
-                /*
-                $document = new \DOMDocument('1.0', 'utf-8');
-                $document->preserveWhiteSpace = false;
-                $document->load($folderUrl . $portal->getName() . ".rdf");
-                $document->formatOutput = true; 
-                $document->normalizeDocument();
-                file_put_contents($folderUrl . $portal->getName() . ".rdf", html_entity_decode($document->saveXML()));
-
-                //$document->save($folderUrl . $portal->getName() . ".rdf");*/
+                $cmd = 'cd ' . $this->resourceUrl . ' && zip -rm "' . $toZipUrl . '.zip" "' . $toZipUrl . '"';
+                error_log( $cmd );
+                error_log( exec( $cmd ) );
+                //error_log( exec("popd"));
             }
         }
         $end = time();
@@ -208,8 +174,10 @@ class GenerateDCATCommand extends BaseCommand
         $xpathCatalog = new \DOMXPath($catalog);
 
         // html entities prevent undefined reference warning
-        $xpath->evaluate('//dcat:Dataset/dct:title')->item(0)->nodeValue = htmlentities($dataset->getName());
-        $xpath->evaluate('//dcat:Dataset/dct:description')->item(0)->nodeValue = htmlentities($dataset->getSummary());
+        $xpath->evaluate('//dcat:Dataset/dct:title')->item(0)
+            ->nodeValue = htmlentities(preg_replace('/<|>/', '', $dataset->getName()));
+        $xpath->evaluate('//dcat:Dataset/dct:description')->item(0)
+            ->nodeValue = htmlentities(preg_replace('/<|>/', '', $dataset->getSummary()));
 
         if( $dataset->getReleasedOn() != NULL ){
             $xpath->evaluate('//dcat:Dataset/dct:issued')->item(0)->nodeValue = 
@@ -239,7 +207,7 @@ class GenerateDCATCommand extends BaseCommand
             $dataset->getRawLicense();
     
         $xpath->evaluate('//dcat:Dataset/dct:publisher/foaf:Organization/rdfs:label')
-              ->item(0)->nodeValue = $dataset->getProvider();
+              ->item(0)->nodeValue = $dataset->getProvider();              
 
         $formats = $dataset->getFormats();
 
@@ -279,5 +247,106 @@ class GenerateDCATCommand extends BaseCommand
 
         return $lang;
     }   
+
+    /**
+     * Apply a good indentation to the file specified
+     *
+     */
+    protected function indentOutput( $filename ){
+        // reformat the file to have a well indented output
+        $document = new \DOMDocument('1.0', 'utf-8');
+        $document->preserveWhiteSpace = false;
+        $document->load( $filename );
+        $document->formatOutput = true; 
+        $document->normalizeDocument();
+        file_put_contents( $filename, html_entity_decode( $document->saveXML() ) );
+    }
+
+    protected function generateCatalog( $portal ){
+        $folderUrl = $this->resourceUrl . $portal->getName() . "/";
+
+        $document = new \DOMDocument('1.0', 'utf-8');
+        $document->preserveWhiteSpace = false;
+        $document->load($this->resourceUrl . "catalogBaseFile.rdf");
+
+        error_log('[DCATGeneration] Generating catalog info');
+        $this->generatePortalInfo($document, $portal);
+        error_log('[DCATGeneration] Done');
+                
+        // get the list of every dataset and foreach of them, generate the dcat dataset part
+        $datasets = $portal->getDatasets();
+        $nbDat = count($datasets);
+        $nbDone = 0;
+
+        if( $nbDat > 0 ){
+            error_log('[DCATGeneration] Generating datasets info (' . $nbDat . ')');
+            foreach ($datasets as $dataset) {
+                if( $nbDone % 100 == 0 ){
+                    error_log('dataset dcat generated : ' . $nbDone . '/' . $nbDat);
+                }
+                $this->generateDatasetInfo($document, $portal, $dataset);
+                $nbDone++;
+            }
+            error_log('[DCATGeneration] Done');
+        }
+
+        // create the folder if it doesn't exists
+        if( !is_dir($folderUrl) ){
+            mkdir($folderUrl);    
+        }
+
+        // save the result
+        $document->formatOutput = true; 
+        $document->normalizeDocument();
+        $content = preg_replace ( '/\&/' , 'and' , html_entity_decode($document->saveXML() ) );
+        file_put_contents($folderUrl . $portal->getName() . ".rdf", $content);
+                
+        $this->indentOutput($folderUrl . $portal->getName() . ".rdf");
+    }
+
+    protected function generateDatasetFiles( $portal ){
+        $folderUrl = $this->resourceUrl . $portal->getName() . "/datasetsRDF/";
+
+        // create the folder if it doesn't exists
+        if( !is_dir( $folderUrl ) ){
+            mkdir($folderUrl);    
+        }
+
+        error_log('[DCATGeneration] Generating dataset\'s files');
+        // get the list of every dataset and foreach of them, generate the dcat dataset file
+        $datasets = $portal->getDatasets();
+        $nbDat = count($datasets);
+        $nbDone = 0;
+
+        if( $nbDat > 0 ){
+            error_log('[DCATGeneration] Generating dataset info (' . $nbDat . ')');
+            foreach ($datasets as $dataset) {
+                $document = new \DOMDocument('1.0', 'utf-8');
+                $document->preserveWhiteSpace = false;
+                $document->load($this->resourceUrl . "catalogBaseFile.rdf");
+
+                $this->generatePortalInfo($document, $portal);
+
+            
+                if( $nbDone % 100 == 0 ){
+                    error_log('dataset files generated : ' . $nbDone . '/' . $nbDat);
+                }
+                $this->generateDatasetInfo($document, $portal, $dataset);
+                
+                // save the result
+                $document->formatOutput = true; 
+                $document->normalizeDocument();
+                $content = preg_replace ( '/\&/' , 'and' , html_entity_decode($document->saveXML() ) );
+
+                $filename = substr ( preg_replace('/\//', '', $dataset->getName() ), 0 , 254 - strlen ('.rdf') );
+                $filename = $filename . '.rdf';
+
+                file_put_contents($folderUrl . $filename, $content);
+                $this->indentOutput($folderUrl . $filename);
+                $nbDone++;
+            }
+            error_log('[DCATGeneration] Done');
+        }
+    }
 }
 
