@@ -14,12 +14,13 @@ class UKGovPortal extends BaseCkanPortal
     public function __construct()
     {
         $this->criteria = array(
-            'setName' => '//*[@id="content"]/div/div/h1/text()',              
+            'setName' => '//*[@id="content"]//h1/text()',              
             'setSummary' => '//*[@id="dataset-overview"]/div[1]/div/p/text()',
-            'setReleasedOn' => '//tr[td[.="Date added to data.gov.uk" and @class="dataset-label"]]/td[2]/text()',
-            'setLastUpdatedOn' => '//tr[td[.="Date updated on data.gov.uk" and @class="dataset-label"]]/td[2]/text()',
-            'setProvider' => '//*[@id="sidebar"]/ul/li[h4[.="Publisher"]]/ul/li[1]/a/text()',
-            'setRawLicense' => '//*[@id="dataset-license"]/div/ul/li/text()',
+            'setReleasedOn' => '//strong[.="Added to data.gov.uk: "]/../text()',
+            'setLastUpdatedOn' => '//strong[.="Modified on data.gov.uk: "]/../text()',
+            'setOwner' => '//h4[.="Publisher"]/../p/a/text()',
+            'setMaintainer' => '//dataset//contributor/description/name',
+            'setRawLicense' => '//*[@id="dataset-license"]/div/ul/li/a[1]/text()',
             'setCategories' => '//tr[td[.="ONS Category" and @class="dataset-label"]]/td[2]/text()',
             'setFormats' => './/*[@property="dc:format"]'
 
