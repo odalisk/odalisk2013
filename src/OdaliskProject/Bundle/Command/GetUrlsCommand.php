@@ -10,7 +10,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use OdaliskProject\Bundle\Scraper\Tools\FileDumper;
 
 /**
- * A command that will download the HTML pages for all the datasets
+ * A command that will search the URLs for the HTML pages to download
  */
 class GetUrlsCommand extends BaseCommand
 {

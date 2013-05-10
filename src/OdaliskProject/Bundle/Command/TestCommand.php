@@ -12,7 +12,7 @@ use OdaliskProject\Bundle\Scraper\Tools\Normalize\DateNormalizer;
 
 
 /**
- * A command that will download the HTML pages for all the datasets
+ * A useful command to help you testing the date normalization
  */
 class TestCommand extends BaseCommand
 {

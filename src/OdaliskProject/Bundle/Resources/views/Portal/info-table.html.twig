@@ -24,8 +24,9 @@
 
     <tr>
         <td class="key">DCAT<i class="icon-info-sign icon-info" rel="popover" title="DCAT File" data-content="A DCAT file generated with our database."></i></td>
-        <td class="value"><a href='/odalisk_web_propre/bundles/odalisk/dcat/{{ portal.name }}.rdf'>Link to the DCAT file</a></td>
+        <td class="value"><a href='{{ path('archive_rdf', { 'portal_name': portal.name }) }}'>Link to the DCAT archive</a></td>
     </tr>
     {% endif %}
+
 
 </table>

@@ -11,7 +11,7 @@ use OdaliskProject\Bundle\Entity\Portal;
 use OdaliskProject\Bundle\Entity\Dataset;
 use OdaliskProject\Bundle\Scraper\Tools\Normalize\DateNormalizer;
 use Symfony\Component\DomCrawler\Crawler;
-
+use OdaliskProject\Bundle\Document\DcatArchive;
 
 
 
@@ -51,6 +51,10 @@ class GenerateDCATCommand extends BaseCommand
         $adhocPlatforms= $container->getParameter('config.enabled_portals.adhoc');
 
         $dcatPlatforms = $container->getParameter('config.enabled_portals.dcat');
+
+        $docManager = $this->getMongoDbManager();
+
+
         // If we have additionnal platforms to parse (dcat ones)
         if( !empty($adhocPlatforms) ){
                 foreach($adhocPlatforms as $it){
@@ -111,13 +115,38 @@ class GenerateDCATCommand extends BaseCommand
                 $this->generateDatasetFiles( $portal );
 
                 $toZipUrl = $portal->getName();
-                //$toZipUrl = preg_replace('/ /', '\ ', $toZipUrl);
-                //$toZipUrl = preg_replace('/\'/', '\\\'', $toZipUrl);
+
 
                 $cmd = 'cd ' . $this->resourceUrl . ' && zip -rm "' . $toZipUrl . '.zip" "' . $toZipUrl . '"';
-                error_log( $cmd );
                 error_log( exec( $cmd ) );
-                //error_log( exec("popd"));
+
+
+                
+                $oldArchive = $docManager->getRepository('OdaliskProject\Bundle\Document\DcatArchive')->findBy(array('name'=>$name));
+
+                if(!is_null($oldArchive)){
+                    echo count($oldArchive);
+                        
+                        foreach ($oldArchive as $previousArchive) {
+                            $docManager->remove($previousArchive);
+                        }
+
+                    $docManager->flush();
+                }    
+
+                $dcatArchive = new DcatArchive();
+                $dcatArchive->setName($name);
+                $dcatArchive->setArchiveName($toZipUrl);
+
+                $dcatArchive->setFile($this->resourceUrl.$toZipUrl. '.zip');
+                $docManager->persist($dcatArchive);
+                $docManager->flush();
+
+                $dcatArchive = null;
+                unlink($this->resourceUrl.$toZipUrl. '.zip');
+
+
+
             }
         }
         $end = time();

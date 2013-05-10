@@ -162,3 +162,9 @@ services:
         parent: base_platform
         calls:
             - [ setConfiguration, [ "%portals.dcat_eu_gov%" ] ]
+    dcat_uk_gov:
+        class: OdaliskProject\Bundle\Scraper\DcatPortal
+        parent: base_platform
+        calls:
+            - [ setConfiguration, [ "%portals.dcat_uk_gov%" ] ]
+

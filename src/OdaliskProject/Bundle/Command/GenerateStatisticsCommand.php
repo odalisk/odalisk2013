@@ -11,9 +11,11 @@ use Symfony\Component\Console\Output\OutputInterface;
 use OdaliskProject\Bundle\Entity\Dataset;
 use OdaliskProject\Bundle\Entity\DatasetCriteria;
 use OdaliskProject\Bundle\Entity\Metric;
+
 /**
  * Generates statistics
  */
+
 class GenerateStatisticsCommand extends BaseCommand
 {
     protected function configure()
@@ -43,7 +45,8 @@ class GenerateStatisticsCommand extends BaseCommand
         $portalCriteriaRepo = $this->getEntityRepository('OdaliskProject\Bundle\Entity\PortalCriteria');
 
         
-        
+        //For each portal
+        //We analyse the metric and store the result in SQL (all the metrics can be found in metrics.yml)
         foreach($portals as $portal) {
 
             $general_value = 0;
@@ -87,7 +90,8 @@ class GenerateStatisticsCommand extends BaseCommand
         $this->writeBlock($output, "[Statistics] The end !");
     }
 
-    
+
+    //A sub function that will fetch a metric with a result furnished by the repository    
     protected function apply_section($name, $criteria, $avgs){
         if (isset($criteria['sections'])) {
             $value = 0;

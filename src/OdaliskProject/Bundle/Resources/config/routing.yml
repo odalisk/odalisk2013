@@ -35,8 +35,13 @@ search:
     defaults:   { _controller: OdaliskBundle:Search:search, _format:html }
 
 dataset_rdf:
-    pattern:    /rdf/{idMongo}
+    pattern:    /rdf/dataset/{idMongo}
     defaults:   { _controller: OdaliskBundle:Rdf:dcat, idMongo:0, _format: html }
+
+archive_rdf:
+    pattern:    /rdf/archive/{portal_name}
+    defaults:   { _controller: OdaliskBundle:Rdf:downloadArchive, portal_name:'', _format: html }
+
 
 dataset_details:
     pattern:    /browser/datasets/details/{dataset_number}/{page_number}/{_format}

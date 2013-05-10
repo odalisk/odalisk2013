@@ -10,7 +10,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use OdaliskProject\Bundle\Entity\DatasetCriteria;
 
 /**
- * A command that will download the HTML pages for all the datasets
+ * A command that extracts the information from the dataset crawled previously
  */
 class ExtractCommand extends BaseCommand
 {
@@ -70,7 +70,7 @@ class ExtractCommand extends BaseCommand
             }
 
             // Process each platform :
-            //  - get successful crawls from the databse
+            //  - get successful crawls from the database
             //  - parse the corresponding files
             foreach ($platforms as $name => $platform) {
                 error_log('[Analysis] Beginning to process ' . $platform->getName());
@@ -82,6 +82,8 @@ class ExtractCommand extends BaseCommand
                 $count = 0;
                 $total = count(glob($platformPath . '*')) - 1;
                 $codes = array();
+
+
 
                 if ($dh = @opendir($platformPath)) {
                     while (($file = readdir($dh)) !== false) {

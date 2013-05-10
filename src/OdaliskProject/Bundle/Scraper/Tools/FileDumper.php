@@ -89,38 +89,10 @@ class FileDumper
         $dcatDataset->setPortalName($platformName);
 
         $dcatDataset->setFile($filename);
-
-
-        //Then we want to extract some information, so we load the associated platform
-        //$platform = self::$container->get($platformName);
-
-        //Creation of future SQL row
-        //$dataset = new Dataset();
-        //$portal  = $platform->loadPortal();
-        //$dataset->setPortal($portal);
-
-        
-        //We launch the analysis of the content
-        //$platform->analyseDcatContent($content, $dataset);
-        //$criteria = new DatasetCriteria($dataset); 
-        //$dataset->setCriteria($criteria);
-        //$dcatDataset->setName($dataset->getName());
         $dm = self::$mongoDb;
         $dm->persist($dcatDataset);
         $dm->flush();
-        //$insertedDataset = $dm->getRepository('OdaliskProject\Bundle\Document\DcatDataset')->findOneBy(array('name'=>$dataset->getName(),
-        //                                                                                            'portalName'=>$platformName));
-        //$dataset->setIdMongo($insertedDataset->getId());
-        
 
-        //End of the task 
-        //$em = self::$container->get('doctrine')->getEntityManager();
-        //$em->persist($criteria);
-        //$em->persist($dataset);
-        //$em->flush();
-        //$insertedDataset = null;
-        //$dataset = null;
-        //$criteria = null;
         $dcatDataset = null;
         unlink($filename);
 
