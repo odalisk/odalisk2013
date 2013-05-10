@@ -10,7 +10,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use OdaliskProject\Bundle\Entity\DatasetCriteria;
 
 /**
- * A command that will download the HTML pages for all the datasets
+ * A command that will extract from the datasets stored in MongoDb the information needed by the project
  */
 class DCATExtractCommand extends BaseCommand
 {
@@ -44,9 +44,6 @@ class DCATExtractCommand extends BaseCommand
         $dcatDatasetsRepo = $docManager->getRepository('OdaliskProject\Bundle\Document\DcatDataset');
 
 
-
-        $portalRepo = $this->getEntityRepository('OdaliskProject\Bundle\Entity\Portal');
-
         // Initialize some arrrays
         $platforms = array();
 
@@ -69,7 +66,7 @@ class DCATExtractCommand extends BaseCommand
             
 
             // Process each platform :
-            //  - get successful crawls from the databse
+            //  - get the dataset stored in MongoDB
             //  - parse the corresponding files
             foreach ($platforms as $name => $platform) {
                 error_log('[Analysis] Beginning to process ' . $platform->getName());
@@ -94,21 +91,26 @@ class DCATExtractCommand extends BaseCommand
 
                 foreach ($datasetsOfPortal as $datasetToAnalyse) {
                     
-
                     $count++;
+
+                    //Creation of a new Dataset
                     $dataset = new \OdaliskProject\Bundle\Entity\Dataset();
                     $dataset->setPortal($portal);
-                    
                     $dataset->setIdMongo($datasetToAnalyse->getId());
+
+
+
+                    //Then we extract the file stored in Mongo
                     $fileContent = $datasetToAnalyse->getFile()->getBytes();
                     $data = json_decode($fileContent,true);
                     
+                    //We analyse the content
                     $platform->analyseDcatContent($data, $dataset);
-                    
-                    //error_log('After DCAT Analysis');
                     $criteria = new DatasetCriteria($dataset);
-                    //error_log('After');
                     $dataset->setCriteria($criteria);
+
+
+                    //And we persist the data
                     $em->persist($criteria);
                     $em->persist($dataset);
                     $dataset = null;

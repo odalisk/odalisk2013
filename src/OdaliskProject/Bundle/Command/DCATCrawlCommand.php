@@ -12,7 +12,7 @@ use OdaliskProject\Bundle\Entity\DatasetCriteria;
 
 
 /**
- * A command that will download the HTML pages for all the datasets
+ * A command that will download the RDF pages for all the datasets
  */
 class DCATCrawlCommand extends BaseCommand
 {
@@ -42,8 +42,7 @@ class DCATCrawlCommand extends BaseCommand
         $platformServices = $container->getParameter('config.enabled_portals.dcat');
 
         //Allow the logs of SQL requests
-        //$em = $this->getEntityManager();
-        //$em->getConnection()->getConfiguration()->setSQLLogger(null);
+
         $em = $this->getEntityManager();
         //$em->getConnection()->getConfiguration()->setSQLLogger(new \Doctrine\DBAL\Logging\EchoSQLLogger());
 
@@ -89,11 +88,10 @@ class DCATCrawlCommand extends BaseCommand
             }
 
 
-            
-
+        
             // Process each platform :
             //  - get the urls for the datasets and add them to the queue
-            //  - Save the data on disk
+            //  - Save the data in mongodb
             foreach ($platforms as $name => $platform) {
                 // Create one URL list / platform
                 $queries[$name] = array();
@@ -105,7 +103,6 @@ class DCATCrawlCommand extends BaseCommand
                 $queries[$name] = $platform->prepareRequestsFromUrls(FileDumper::ddlRdfFiles($name));
                 // Log how many URLs we added
                 FileDumper::setTotalCount(FileDumper::getTotalCount() + count($queries[$name]));
-                //error_log($platform->getName() . ' has ' . $platform->getTotalCount() . ' datasets');
             }
 
             // While our url pool isnt empty

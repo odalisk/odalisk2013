@@ -10,7 +10,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Finder\Finder;
 
 /**
- * A command that will download the HTML pages for all the datasets
+ * A command that will inform you about the number of stored datasets per portal
  */
 class CrawlStatCommand extends BaseCommand
 {
@@ -29,7 +29,6 @@ class CrawlStatCommand extends BaseCommand
         // Store the container so that we have an easy shortcut
         $container = $this->getContainer();
         $platformServices = $container->getParameter('config.enabled_portals.adhoc');
-        $proot = $container->getParameter('kernel.project_root');
         $cmd = 'cut -c 17-19 ';
         // Initialize some arrays
         $stats = array();
