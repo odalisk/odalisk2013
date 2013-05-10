@@ -5,13 +5,14 @@ parameters:
         #- socrata
         #- new_york
         #- usa_gov
-        #- uk_gov
-        - eu_gov
+        - uk_gov
+        #- eu_gov
         #- data_publica
         #- data_market
         #- montpellier
     config.enabled_portals.dcat:
         #- dcat_eu_gov
+        - dcat_uk_gov
 
     # All the information we need for each platfom. Will be used to initialize the services
     portals.nantes:
@@ -74,7 +75,7 @@ parameters:
         api_documentation: true
         opendata_concept_explained: false
         type: "Socrata"
-    
+
     portals.new_york:
         name:       "NYC OpenData"
         base_url:   "https://nycopendata.socrata.com"
@@ -232,4 +233,24 @@ parameters:
         api: true
         api_documentation: true
         opendata_concept_explained: false
+        type: "CKAN"
+
+    portals.dcat_uk_gov:
+        name:       "DCAT UK OpenData"
+        base_url:   "http://data.gov.uk/dataset/"
+        api_url:    "http://data.gov.uk/api/rest/dataset"
+        country:    "United Kingdom"
+        entity:     "UK Government"
+        status:     "Institutional"
+        search_engine:   true
+        metadata_search: true
+        filtering_license_search: false
+        forum_section:   true
+        contact_form: true
+        rating_dataset: true
+        comment_dataset: true
+        suggest_dataset: true
+        api: true
+        api_documentation: true
+        opendata_concept_explained: true
         type: "CKAN"
