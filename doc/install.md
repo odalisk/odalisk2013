@@ -7,7 +7,7 @@ If you want to experiment the Odalisk functionalities on your own server for ins
 
 The Installation of a server, a Lamp server should be a good point to start
 
-Then do not forget to have nodejs installed on your server/computer.- [NodeJs](http://www.nodejs.org.com).
+Then do not forget to have nodejs installed on your server/computer.- [NodeJs](http://nodejs.org/).
 
 With npm, install also less : 
 ```bash
