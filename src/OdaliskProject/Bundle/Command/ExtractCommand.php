@@ -84,11 +84,11 @@ class ExtractCommand extends BaseCommand
                 $codes = array();
 
 
-
+                echo "bouh";
                 if ($dh = @opendir($platformPath)) {
                     while (($file = readdir($dh)) !== false) {
                         $data = json_decode(file_get_contents($platformPath . $file), true);
-
+echo "bouh2";
                         if (null != $data && array_key_exists('meta', $data)) {
                             $code = $data['meta']['code'];
                             if (!is_int($code)) {
@@ -120,8 +120,8 @@ class ExtractCommand extends BaseCommand
                 } else {
                     error_log('[Analysis] nothing to be done. Perhaps ./console odalisk:crawl ' . $name);
                     continue;
-                }
-                $portal->setDatasetCount($codes[200]);
+                }echo "bouh3";
+                $portal->setDatasetCount($count);
                 $em->persist($portal);
 
                 error_log('[Analysis] ' . $count . ' / ' . $total . ' done');

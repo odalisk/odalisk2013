@@ -60,7 +60,7 @@ class DefaultController extends OdaliskController
                 $message = \Swift_Message::newInstance()
                         ->setSubject($contact->getSubject())
                         ->setFrom($contact->getEmail())
-                        ->setTo('contact@odalisk.org')
+                        ->setTo('paulfrancois.jeau@gmail.com')
                         ->setBody($contact->getBody()."\nMail de contact : ".$contact->getEmail()."\nNom d'utilisateur : ".$contact->getName()."\nPage d'origine : ".$contact->getCurrentPage())
                     ;
 
